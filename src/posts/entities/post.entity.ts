@@ -15,14 +15,14 @@ export interface postAttributes {
   categoryId?: string;
   address?: string;
   phoneNumber?: string;
-  contents?: string;
+  content?: string;
   views?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 @Table({
-  tableName: "post",
+  tableName: "Post",
   timestamps: false,
 })
 export class post
@@ -30,11 +30,12 @@ export class post
   implements postAttributes
 {
   @Column({
+    field: "Oid",
     primaryKey: true,
-    type: DataType.STRING(100),
+    type: DataType.STRING,
   })
   @Index({
-    name: "post_pkey",
+    name: "Post_pkey",
     using: "btree",
     unique: true,
   })
@@ -42,39 +43,39 @@ export class post
 
   @Column({
     allowNull: true,
-    type: DataType.STRING(50),
+    type: DataType.STRING,
   })
   adminId?: string;
 
   @Column({
     allowNull: true,
-    type: DataType.STRING(100),
-  })
-  categoryOid?: string;
-
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(100),
+    type: DataType.STRING,
   })
   title?: string;
 
   @Column({
     allowNull: true,
-    type: DataType.STRING(100),
+    type: DataType.STRING,
+  })
+  categoryId?: string;
+
+  @Column({
+    allowNull: true,
+    type: DataType.STRING,
   })
   address?: string;
 
   @Column({
     allowNull: true,
-    type: DataType.STRING(50),
+    type: DataType.STRING,
   })
   phoneNumber?: string;
 
   @Column({
     allowNull: true,
-    type: DataType.STRING(500),
+    type: DataType.STRING,
   })
-  contents?: string;
+  content?: string;
 
   @Column({
     allowNull: true,
@@ -83,20 +84,14 @@ export class post
   views?: number;
 
   @Column({
-    field: "createdAt",
     allowNull: true,
     type: DataType.DATE,
-    comment: "생성일",
-    defaultValue: DataType.NOW,
   })
   createdAt?: Date;
 
   @Column({
-    field: "updatedAt",
     allowNull: true,
     type: DataType.DATE,
-    comment: "수정일",
-    defaultValue: DataType.NOW,
   })
   updatedAt?: Date;
 }

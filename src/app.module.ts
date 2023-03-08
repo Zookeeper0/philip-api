@@ -4,7 +4,8 @@ import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { AdminModule } from './admin/admin.module';
+import { AdminModule } from "./admin/admin.module";
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AdminModule } from './admin/admin.module';
       timezone: "+09:00",
     }),
     AdminModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
