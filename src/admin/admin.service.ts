@@ -1,11 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
+import { Injectable } from "@nestjs/common";
+import { admin } from "src/models";
+import { CreateAdminDto } from "./dto/create-admin.dto";
+import { UpdateAdminDto } from "./dto/update-admin.dto";
 
 @Injectable()
 export class AdminService {
   create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+    return "This action adds a new admin";
+  }
+
+  /** refershToekn update */
+  async updateRefreshToken(adminId: string, token: string) {
+    return admin.update(
+      {
+        token: token,
+      },
+      { where: { adminId: adminId } }
+    );
   }
 
   findAll() {

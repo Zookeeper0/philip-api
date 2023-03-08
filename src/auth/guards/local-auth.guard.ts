@@ -4,5 +4,8 @@ import { AuthGuard } from "@nestjs/passport";
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard("local") {
-  getRequest(context: ExecutionContext) {}
+  getRequest(context: ExecutionContext) {
+    super.canActivate(context);
+    return context.switchToHttp().getRequest();
+  }
 }
