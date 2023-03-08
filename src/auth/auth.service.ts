@@ -1,24 +1,27 @@
 import { Injectable } from "@nestjs/common";
 import { pbkdf2Sync } from "crypto";
+import { AdminRepository } from "src/admin/admin.repository";
 import { admin } from "src/models";
 
 @Injectable()
 export class AuthService {
-  constructor() {}
+  constructor(private readonly adminRepository: AdminRepository) {}
 
-  async validateUser(userId: string, password: string): Promise<any> {
-    // const user = await this.userService.findUser(userId);
-    // const inputHash = pbkdf2Sync(
-    //   password,
-    //   user?.salt || "",
-    //   1000,
-    //   64,
-    //   "sha512"
-    // ).toString("hex");
-    // if (user && user.password === inputHash) {
-    //   return user;
-    // }
-    // return null;
+  async validateUser(adminId: string, password: string): Promise<any> {
+    const admin = await this.adminRepository.findOneAdmin(adminId);
+
+    const inputHash = pbkdf2Sync(
+      password,
+      adminId || "",
+      1000,
+      64,
+      "sha512"
+    ).toString("hex");
+
+    if (admin && password === inputHash) {
+      return admin;
+    }
+    return null;
   }
 
   async validRefreshToken(userId: string, token: string): Promise<any> {
