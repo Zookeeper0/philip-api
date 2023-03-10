@@ -16,6 +16,7 @@ export class PostsRepository {
     try {
       return await post.findAll();
     } catch (err) {
+      console.log(err);
       Logger.error(err);
     }
   }

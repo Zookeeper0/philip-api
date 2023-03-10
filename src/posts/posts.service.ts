@@ -12,6 +12,7 @@ export class PostsService {
     private readonly util: Utils
   ) {}
 
+  // dto : oid?, title, adress, phoneNumber
   async addPost(data: CreatePostDto) {
     const t = await this.seqeulize.transaction();
     try {
@@ -23,9 +24,45 @@ export class PostsService {
       Logger.log("oid, data", oid, data);
       await post.create(data, { transaction: t });
       await t.commit();
+      return { message: "success!!" };
     } catch (err) {
       await t.rollback();
       Logger.error(err);
+    }
+  }
+
+  // 카테고리에 따른 메뉴
+  async getCategoryPosts(oid) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const postsData = await post.findAll({
+        where: {
+          categoryOid: oid,
+        },
+      });
+      await t.commit();
+      return postsData;
+    } catch (error) {
+      await t.rollback();
+      console.log(error);
+      Logger.error(error);
+    }
+  }
+
+  async getOnePost(oid) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const postsData = await post.findOne({
+        where: {
+          oid: oid,
+        },
+      });
+      await t.commit();
+      return postsData;
+    } catch (error) {
+      await t.rollback();
+      console.log(error);
+      Logger.error(error);
     }
   }
 }

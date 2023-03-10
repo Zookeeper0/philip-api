@@ -10,9 +10,9 @@ import {
 
 export interface postAttributes {
   oid: string;
-  adminId?: string;
+  adminOid?: string;
   title?: string;
-  categoryId?: string;
+  categoryOid?: string;
   address?: string;
   phoneNumber?: string;
   contents?: string;
@@ -44,7 +44,7 @@ export class post
     allowNull: true,
     type: DataType.STRING(50),
   })
-  adminId?: string;
+  adminOid?: string;
 
   @Column({
     allowNull: true,

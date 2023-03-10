@@ -5,9 +5,10 @@ import { Logger } from "@nestjs/common/services";
 import { Sequelize } from "sequelize-typescript";
 import { Utils } from "src/util/common.utils";
 import * as crypto from "crypto";
-import { admin } from "src/models";
+import { admin, category } from "src/models";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
 import { createAccessToken } from "src/common/jwt.fn";
+import { CategoryDto } from "./dto/category/category.dto";
 @Injectable()
 export class AdminService {
   constructor(
@@ -79,6 +80,27 @@ export class AdminService {
     } catch (err) {
       Logger.error(err);
       await t.rollback();
+    }
+  }
+
+  async createCategory(categoryDto: CategoryDto) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const oid = uuid();
+      categoryDto.oid = oid;
+      const categoryData = await category.create(categoryDto);
+    } catch (err) {
+      Logger.error(err);
+      await t.rollback();
+    }
+  }
+
+  async getAllCategory() {
+    try {
+      return await category.findAll();
+    } catch (err) {
+      console.log(err);
+      Logger.error(err);
     }
   }
 }
