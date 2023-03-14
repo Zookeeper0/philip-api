@@ -1,102 +1,103 @@
 import {
-  Model,
-  Table,
-  Column,
-  DataType,
-  Index,
-  Sequelize,
-  ForeignKey,
+	Model, Table, Column, DataType, Index, Sequelize, ForeignKey 
 } from "sequelize-typescript";
 
 export interface postAttributes {
-  oid: string;
-  adminOid?: string;
-  title?: string;
-  categoryOid?: string;
-  address?: string;
-  phoneNumber?: string;
-  contents?: string;
-  views?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+    oid: string;
+    adminOid?: string;
+    categoryOid?: string;
+    title?: string;
+    address?: string;
+    phoneNumber?: string;
+    contents?: string;
+    views?: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    cityOid?: string;
 }
 
 @Table({
-  tableName: "post",
-  timestamps: false,
+	tableName: "post",
+	timestamps: false 
 })
-export class post
-  extends Model<postAttributes, postAttributes>
-  implements postAttributes
-{
-  @Column({
-    primaryKey: true,
-    type: DataType.STRING(100),
-  })
-  @Index({
-    name: "post_pkey",
-    using: "btree",
-    unique: true,
-  })
-  oid!: string;
+export class post extends Model<postAttributes, postAttributes> implements postAttributes {
 
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(50),
-  })
-  adminOid?: string;
+    @Column({
+    	primaryKey: true,
+    	type: DataType.STRING(100) 
+    })
+    @Index({
+    	name: "post_pkey",
+    	using: "btree",
+    	unique: true 
+    })
+    	oid!: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(100),
-  })
-  categoryOid?: string;
+    @Column({
+    	field: "admin_oid",
+    	allowNull: true,
+    	type: DataType.STRING(50) 
+    })
+    	adminOid?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(100),
-  })
-  title?: string;
+    @Column({
+    	field: "category_oid",
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	categoryOid?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(100),
-  })
-  address?: string;
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	title?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(50),
-  })
-  phoneNumber?: string;
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	address?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.STRING(500),
-  })
-  contents?: string;
+    @Column({
+    	field: "phone_number",
+    	allowNull: true,
+    	type: DataType.STRING(50) 
+    })
+    	phoneNumber?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataType.INTEGER,
-  })
-  views?: number;
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(500) 
+    })
+    	contents?: string;
 
-  @Column({
-    field: "createdAt",
-    allowNull: true,
-    type: DataType.DATE,
-    comment: "생성일",
-    defaultValue: DataType.NOW,
-  })
-  createdAt?: Date;
+    @Column({
+    	allowNull: true,
+    	type: DataType.INTEGER 
+    })
+    	views?: number;
 
-  @Column({
-    field: "updatedAt",
-    allowNull: true,
-    type: DataType.DATE,
-    comment: "수정일",
-    defaultValue: DataType.NOW,
-  })
-  updatedAt?: Date;
+    @Column({
+    	field: "created_at",
+    	allowNull: true,
+    	type: DataType.DATE,
+    	defaultValue: Sequelize.literal("now()") 
+    })
+    	createdAt?: Date;
+
+    @Column({
+    	field: "updated_at",
+    	allowNull: true,
+    	type: DataType.DATE 
+    })
+    	updatedAt?: Date;
+
+    @Column({
+    	field: "city_oid",
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	cityOid?: string;
+
 }

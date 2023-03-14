@@ -38,6 +38,7 @@ export class admin
   oid!: string;
 
   @Column({
+    field: "admin_id",
     allowNull: true,
     type: DataType.STRING(50),
   })
@@ -62,20 +63,17 @@ export class admin
   birth?: Date;
 
   @Column({
-    field: "createdAt",
+    field: "created_at",
     allowNull: true,
     type: DataType.DATE,
-    comment: "생성일",
-    defaultValue: DataType.NOW,
+    defaultValue: Sequelize.literal("now()"),
   })
   createdAt?: Date;
 
   @Column({
-    field: "updatedAt",
+    field: "updated_at",
     allowNull: true,
     type: DataType.DATE,
-    comment: "수정일",
-    defaultValue: DataType.NOW,
   })
   updatedAt?: Date;
 }

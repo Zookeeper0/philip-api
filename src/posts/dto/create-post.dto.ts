@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 export class CreatePostDto {
   oid?: string;
   adminOid?: string;
-
+  cityOid?: string;
   categoryOid: string;
   title: string;
   address: string;

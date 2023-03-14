@@ -3,6 +3,7 @@ import { category } from "src/models";
 import { AdminRepository } from "./admin.repository";
 import { AdminService } from "./admin.service";
 import { CategoryDto } from "./dto/category/category.dto";
+import { CityDto } from "./dto/city/city.dto";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
 
@@ -36,5 +37,10 @@ export class AdminController {
   @Post("/category")
   addCategory(@Body() categoryDto: CategoryDto) {
     return this.adminService.createCategory(categoryDto);
+  }
+
+  @Post("/city")
+  addCity(@Body() cityDto: CityDto) {
+    return this.adminService.createCity(cityDto);
   }
 }

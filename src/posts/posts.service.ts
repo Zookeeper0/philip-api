@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { Logger } from "@nestjs/common/services";
 import { Sequelize } from "sequelize-typescript";
 import { post } from "src/models";
@@ -38,23 +38,6 @@ export class PostsService {
       const postsData = await post.findAll({
         where: {
           categoryOid: oid,
-        },
-      });
-      await t.commit();
-      return postsData;
-    } catch (error) {
-      await t.rollback();
-      console.log(error);
-      Logger.error(error);
-    }
-  }
-
-  async getOnePost(oid) {
-    const t = await this.seqeulize.transaction();
-    try {
-      const postsData = await post.findOne({
-        where: {
-          oid: oid,
         },
       });
       await t.commit();

@@ -1,14 +1,20 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  UnauthorizedException,
+  NotAcceptableException,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { v1 as uuid } from "uuid";
 import { Logger } from "@nestjs/common/services";
 import { Sequelize } from "sequelize-typescript";
 import { Utils } from "src/util/common.utils";
 import * as crypto from "crypto";
-import { admin, category } from "src/models";
+import { admin, category, city } from "src/models";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
-import { createAccessToken } from "src/common/jwt.fn";
+import { createAccessToken, getTokenInfo } from "src/common/jwt.fn";
 import { CategoryDto } from "./dto/category/category.dto";
+import { CityDto } from "./dto/city/city.dto";
 @Injectable()
 export class AdminService {
   constructor(
@@ -18,29 +24,35 @@ export class AdminService {
 
   // 관리자 로그인
   // createAdmindto( adminId, password )
-  async signInAdmin(
-    signinAdmin: SignInAdminDto
-  ): Promise<{ accessToken: string }> {
+  async signInAdmin(signinAdmin: SignInAdminDto) {
     try {
+      console.log(signinAdmin);
       const { adminId, password } = signinAdmin;
       const signinData = await admin.findOne({
         where: {
           adminId: adminId,
         },
       });
-      if (
-        signinData &&
-        (await crypto.createHash("sha512").update(password).digest("hex"))
-      ) {
-        console.log("in");
-        // 유저 토큰 생성 ( Secret + Payload )
-        const payload = { adminId };
-        const accessToken = await createAccessToken(payload);
 
-        return { accessToken };
+      // 이메일 존재시 비밀번호 비교.
+      if (
+        signinData.password.toString() !==
+        crypto.createHash("sha512").update(password).digest("hex")
+      ) {
+        console.log("signinData.password :", signinData.password);
+        throw new NotFoundException("비밀번호가 일치하지 않습니다.");
       }
+
+      const { oid } = signinData;
+      // 유저 토큰 생성
+      const payload = { oid };
+      const accessToken = await getTokenInfo(payload);
+
+      return accessToken;
     } catch (err) {
-      throw new UnauthorizedException("logIn failed");
+      console.log(err);
+      Logger.error(err);
+      throw new UnauthorizedException("유저 정보를 찾을 수 없습니다.");
     }
   }
 
@@ -63,7 +75,7 @@ export class AdminService {
       // 위의 조건과 같은 조건이 있다면 중복된 아이디 알림
       if (adminData?.adminId) {
         console.log("중복된 아이디 입니다.");
-        return { message: "중복된 아이디 입니다." };
+        throw new NotAcceptableException();
       }
 
       createAdmindto.password = crypto
@@ -83,17 +95,7 @@ export class AdminService {
     }
   }
 
-  async createCategory(categoryDto: CategoryDto) {
-    const t = await this.seqeulize.transaction();
-    try {
-      const oid = uuid();
-      categoryDto.oid = oid;
-      const categoryData = await category.create(categoryDto);
-    } catch (err) {
-      Logger.error(err);
-      await t.rollback();
-    }
-  }
+  // 카테고리, 시티 추가 , etc..-------------------------------------------------
 
   async getAllCategory() {
     try {
@@ -101,6 +103,33 @@ export class AdminService {
     } catch (err) {
       console.log(err);
       Logger.error(err);
+    }
+  }
+
+  async createCategory(categoryDto: CategoryDto) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const oid = uuid();
+      categoryDto.oid = oid;
+      Logger.log(categoryDto);
+      const categoryData = await category.create(categoryDto);
+      await t.commit();
+    } catch (err) {
+      Logger.error(err);
+      await t.rollback();
+    }
+  }
+
+  async createCity(cityDto: CityDto) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const oid = uuid();
+      cityDto.oid = oid;
+      const cityData = await city.create(cityDto);
+      await t.commit();
+    } catch (err) {
+      Logger.error(err);
+      await t.rollback();
     }
   }
 }

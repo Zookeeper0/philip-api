@@ -5,7 +5,11 @@ import { SequelizeModule } from "@nestjs/sequelize";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AdminModule } from "./admin/admin.module";
-import { PostsModule } from './posts/posts.module';
+import { PostsModule } from "./posts/posts.module";
+import { MulterModule } from "@nestjs/platform-express/multer";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -19,6 +23,12 @@ import { PostsModule } from './posts/posts.module';
       autoLoadModels: true,
       synchronize: true,
       timezone: "+09:00",
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "uploads"),
+    }),
+    MulterModule.register({
+      dest: "./uploads",
     }),
     AdminModule,
     PostsModule,

@@ -2,25 +2,24 @@ import {
 	Model, Table, Column, DataType, Index, Sequelize, ForeignKey 
 } from "sequelize-typescript";
 
-export interface categoryAttributes {
+export interface cityAttributes {
     oid: string;
     name?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createAt?: Date;
 }
 
 @Table({
-	tableName: "category",
+	tableName: "city",
 	timestamps: false 
 })
-export class category extends Model<categoryAttributes, categoryAttributes> implements categoryAttributes {
+export class city extends Model<cityAttributes, cityAttributes> implements cityAttributes {
 
     @Column({
     	primaryKey: true,
     	type: DataType.STRING(100) 
     })
     @Index({
-    	name: "category_pkey",
+    	name: "city_pkey",
     	using: "btree",
     	unique: true 
     })
@@ -33,18 +32,11 @@ export class category extends Model<categoryAttributes, categoryAttributes> impl
     	name?: string;
 
     @Column({
-    	field: "created_at",
+    	field: "create_at",
     	allowNull: true,
     	type: DataType.DATE,
     	defaultValue: Sequelize.literal("now()") 
     })
-    	createdAt?: Date;
-
-    @Column({
-    	field: "updated_at",
-    	allowNull: true,
-    	type: DataType.DATE 
-    })
-    	updatedAt?: Date;
+    	createAt?: Date;
 
 }
