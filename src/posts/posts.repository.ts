@@ -4,6 +4,7 @@ import sequelize from "sequelize";
 import { Utils } from "src/util/common.utils";
 import { Logger } from "@nestjs/common/services";
 import { post } from "src/models";
+import { Op } from "sequelize";
 
 const ALL_OID = "fb673f00-c152-11ed-8fb3-59762efda8c3";
 
@@ -37,15 +38,32 @@ export class PostsRepository {
     );
   }
 
-  async getAllPosts(category) {
+  async getAllPosts(category, search) {
+    console.log("category", category);
+    console.log("search", search);
     try {
       if (category === ALL_OID) {
         console.log("in");
-        return await post.findAll();
+        return await post.findAll({
+          where: {
+            title: {
+              //카테고리가 전체(디폴트값)이고 제목에 검색어가 포함됐나?
+              [Op.like]: `%${search}%`,
+            },
+          },
+        });
       } else {
         return await post.findAll({
           where: {
-            categoryOid: category,
+            [Op.and]: [
+              {
+                title: {
+                  // 카테고리가 선택되고 검색어가 있나?
+                  [Op.like]: `%${search}%`,
+                },
+              },
+              { categoryOid: category },
+            ],
           },
         });
       }

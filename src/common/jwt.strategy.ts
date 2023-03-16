@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 // JWT 토큰 생성
-exports.createToken = (payload) => {
+export function createToken(payload) {
   // const jwtOption = { expiresIn: "12h" };
   const jwtOption = {};
 
@@ -11,9 +11,9 @@ exports.createToken = (payload) => {
       resolve(token);
     });
   });
-};
+}
 
-exports.createRefreshToken = (payload) => {
+export function createRefreshToken(payload) {
   const jwtOption = { expiresIn: "8h" };
 
   return new Promise((resolve, reject) => {
@@ -22,15 +22,15 @@ exports.createRefreshToken = (payload) => {
       resolve(token);
     });
   });
-};
+}
 
 // JWT 토큰 검증
-exports.verifyToken = (token) => {
+export function verifyToken(token) {
   return new Promise((resolve, reject) => {
-    token = token.replace("Bearer ", "");
+    // token = token.replace("Bearer ", "");
     jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
       if (error) reject(error);
       resolve(decoded);
     });
   });
-};
+}

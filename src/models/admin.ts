@@ -40,7 +40,7 @@ export class admin
   @Column({
     field: "admin_id",
     allowNull: true,
-    type: DataType.STRING(50),
+    type: DataType.STRING(100),
   })
   adminId?: string;
 

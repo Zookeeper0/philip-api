@@ -8,10 +8,10 @@ export class CreatePostDto {
   categoryOid: string;
   title: string;
   address: string;
-
+  token?: string;
   phoneNumber: string;
   contents: string;
-  views: number;
+  views?: number;
 
   createDate?: Date;
   updateDate?: Date;

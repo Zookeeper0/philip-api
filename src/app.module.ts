@@ -9,7 +9,7 @@ import { PostsModule } from "./posts/posts.module";
 import { MulterModule } from "@nestjs/platform-express/multer";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
-import { AuthModule } from "./auth/auth.module";
+import { CategoryModule } from "./category/category.module";
 
 @Module({
   imports: [
@@ -32,6 +32,7 @@ import { AuthModule } from "./auth/auth.module";
     }),
     AdminModule,
     PostsModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

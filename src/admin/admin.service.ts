@@ -10,11 +10,10 @@ import { Logger } from "@nestjs/common/services";
 import { Sequelize } from "sequelize-typescript";
 import { Utils } from "src/util/common.utils";
 import * as crypto from "crypto";
-import { admin, category, city } from "src/models";
+import { admin } from "src/models";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
 import { createAccessToken, getTokenInfo } from "src/common/jwt.fn";
-import { CategoryDto } from "./dto/category/category.dto";
-import { CityDto } from "./dto/city/city.dto";
+
 @Injectable()
 export class AdminService {
   constructor(
@@ -22,7 +21,7 @@ export class AdminService {
     private readonly util: Utils
   ) {}
 
-  // 관리자 로그인
+  /** 관리자 로그인 */
   // createAdmindto( adminId, password )
   async signInAdmin(signinAdmin: SignInAdminDto) {
     try {
@@ -56,7 +55,7 @@ export class AdminService {
     }
   }
 
-  // 관리자 생성
+  /** 관리자 생성  */
   // createAdmindto( oid?, adminId, password, name, birth)
   async createAdmin(createAdmindto: CreateAdminDto) {
     const t = await this.seqeulize.transaction();
@@ -88,44 +87,6 @@ export class AdminService {
       createAdmindto.oid = USER_OID;
 
       await admin.create(createAdmindto);
-      await t.commit();
-    } catch (err) {
-      Logger.error(err);
-      await t.rollback();
-    }
-  }
-
-  // 카테고리, 시티 추가 , etc..-------------------------------------------------
-
-  async getAllCategory() {
-    try {
-      return await category.findAll();
-    } catch (err) {
-      console.log(err);
-      Logger.error(err);
-    }
-  }
-
-  async createCategory(categoryDto: CategoryDto) {
-    const t = await this.seqeulize.transaction();
-    try {
-      const oid = uuid();
-      categoryDto.oid = oid;
-      Logger.log(categoryDto);
-      const categoryData = await category.create(categoryDto);
-      await t.commit();
-    } catch (err) {
-      Logger.error(err);
-      await t.rollback();
-    }
-  }
-
-  async createCity(cityDto: CityDto) {
-    const t = await this.seqeulize.transaction();
-    try {
-      const oid = uuid();
-      cityDto.oid = oid;
-      const cityData = await city.create(cityDto);
       await t.commit();
     } catch (err) {
       Logger.error(err);

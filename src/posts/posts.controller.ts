@@ -15,9 +15,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common/decorators";
-import { FileInterceptor } from "@nestjs/platform-express";
 import { FilesInterceptor } from "@nestjs/platform-express/multer";
-import { diskStorage } from "multer";
 import { multerDiskOptions } from "src/util/multer.options.factory";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { PostsRepository } from "./posts.repository";
@@ -32,15 +30,20 @@ export class PostsController {
   ) {}
 
   @Get("/")
-  getAllPosts(@Query("category") category: string) {
-    Logger.log("category key :", category);
-    return this.postsRepository.getAllPosts(category);
+  getAllPosts(
+    @Query("category") category: string,
+    @Query("search") search: string
+  ) {
+    return this.postsRepository.getAllPosts(category, search);
   }
 
+  /** FilesInterceptor의 첫번째 속성 이름이 formData의 이미지가 담겨있는 key값과 같아야한다.*/
   @Post("/")
-  addPost(@Body() data) {
-    Logger.log("data", data);
-    return this.postsService.addPost(data);
+  @UseInterceptors(FilesInterceptor("files", null, multerDiskOptions))
+  @Bind(UploadedFiles())
+  addPost(files: Express.Multer.File, @Body() body) {
+    const data = JSON.parse(body.content);
+    return this.postsService.addPost(data, files);
   }
 
   @Get("/:oid")
@@ -48,18 +51,11 @@ export class PostsController {
     return this.postsRepository.getOnePost(oid);
   }
 
-  @Post("/images")
-  @UseInterceptors(FilesInterceptor("file", null, multerDiskOptions))
-  @Bind(UploadedFiles())
-  uploadFile(files, @Res() res: Response) {
-    const data = files.map((v) => v.filename);
-    return res.json(data);
-  }
-
-  // 카테고리에 따른 메뉴 불러오기
-  @Get("/category/:oid")
-  getCategoryPosts(@Param("oid") oid) {
-    console.log(oid);
-    return this.postsService.getCategoryPosts(oid);
-  }
+  // @Post("/images")
+  // @UseInterceptors(FilesInterceptor("file", null, multerDiskOptions))
+  // @Bind(UploadedFiles())
+  // uploadFile(files, @Res() res: Response) {
+  //   const data = files.map((v) => v.filename);
+  //   return res.json(data);
+  // }
 }
