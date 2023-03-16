@@ -1,15 +1,11 @@
 import { accessJwtOptions, refreshJwtOptions } from "@constants";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { AdminService } from "src/admin/admin.service";
 import { admin } from "src/models";
 
 @Injectable()
 export class TokenService {
-  constructor(
-    private adminService: AdminService,
-    private jwtService: JwtService
-  ) {}
+  constructor(private jwtService: JwtService) {}
 
   generateAccessToken(admin: admin) {
     const payload = { name: admin.name, sub: admin.adminId };
@@ -20,7 +16,6 @@ export class TokenService {
     try {
       const payload = { name: admin.name, sub: admin.adminId };
       const token = this.jwtService.sign(payload, refreshJwtOptions);
-      await this.adminService.updateRefreshToken(admin.adminId, token);
 
       return token;
     } catch (error) {

@@ -1,18 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { pbkdf2Sync } from "crypto";
-import { AdminRepository } from "src/admin/admin.repository";
+import { AdminService } from "src/admin/admin.service";
 import { admin } from "src/models";
-import { TokenService } from "src/token/toekn.service";
+import { TokenService } from "src/token/token.service";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly adminRepository: AdminRepository,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly adminService: AdminService
   ) {}
 
   async validateUser(adminId: string, password: string): Promise<any> {
-    const admin = await this.adminRepository.findOneAdmin(adminId);
+    const adminModel = await this.adminService.findOneAdmin(adminId);
 
     const inputHash = pbkdf2Sync(
       password,
@@ -22,8 +22,8 @@ export class AuthService {
       "sha512"
     ).toString("hex");
 
-    if (admin && password === inputHash) {
-      return admin;
+    if (adminModel && password === inputHash) {
+      return adminModel;
     }
 
     return null;

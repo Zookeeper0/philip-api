@@ -4,6 +4,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { parse } from "cookie";
 
+const ACCESS_TOKEN_EXPIRES = 60 * 5 * 1000;
+
 type JwtPayload = {
   sub: string;
   name: string;
