@@ -6,5 +6,5 @@ export class CreateAdminDto {
   password: any;
   // 어드민 이름
   name: string;
-  birth: Date;
+  birth: string;
 }

@@ -8,6 +8,7 @@ node_modules/
 dist/
 .prettierrc
 
+.env
 # Compiled Java class files
 *.class
 

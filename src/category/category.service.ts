@@ -1,4 +1,8 @@
-import { Injectable, Logger } from "@nestjs/common";
+import {
+  Injectable,
+  Logger,
+  InternalServerErrorException,
+} from "@nestjs/common";
 import { Sequelize } from "sequelize-typescript";
 import { category, city } from "src/models";
 import { Utils } from "src/util/common.utils";
@@ -13,17 +17,17 @@ export class CategoryService {
     private readonly util: Utils
   ) {}
 
-  /** 모든 카테고리 데이터 프론트 상단 nav 항목 */
+  /** GET 모든 카테고리 데이터 프론트 상단 nav 항목 */
   async getAllCategory() {
     try {
       return await category.findAll();
     } catch (err) {
-      console.log(err);
       Logger.error(err);
+      throw new InternalServerErrorException(err);
     }
   }
 
-  /** 카테고리 생성 ( 관리자 ) */
+  /** POST 카테고리 생성 ( 관리자 ) */
   async createCategory(categoryDto: CategoryDto) {
     const t = await this.seqeulize.transaction();
     try {
@@ -35,10 +39,20 @@ export class CategoryService {
     } catch (err) {
       Logger.error(err);
       await t.rollback();
+      throw new InternalServerErrorException(err);
     }
   }
 
-  /** City 카테고리 생성, ( 앙헬레스, 세부, 마닐라, ? ) */
+  /** GET 모든 City 카테고리 데이터 항목 */
+  async getAllCity(cityDto: CityDto) {
+    try {
+      return await city.findAll();
+    } catch (err) {
+      console.log(err);
+      Logger.error(err);
+    }
+  }
+  /** POST City 카테고리 생성, ( 앙헬레스, 세부, 마닐라, ? ) */
   async createCity(cityDto: CityDto) {
     const t = await this.seqeulize.transaction();
     try {
@@ -48,6 +62,7 @@ export class CategoryService {
       await t.commit();
     } catch (err) {
       Logger.error(err);
+      throw new InternalServerErrorException(err);
       await t.rollback();
     }
   }

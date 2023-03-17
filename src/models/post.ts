@@ -14,6 +14,7 @@ export interface postAttributes {
     createdAt?: Date;
     updatedAt?: Date;
     cityOid?: string;
+    promotion?: boolean;
 }
 
 @Table({
@@ -36,7 +37,7 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     @Column({
     	field: "admin_oid",
     	allowNull: true,
-    	type: DataType.STRING(50) 
+    	type: DataType.STRING(100) 
     })
     	adminOid?: string;
 
@@ -99,5 +100,11 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     	type: DataType.STRING(100) 
     })
     	cityOid?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.BOOLEAN 
+    })
+    	promotion?: boolean;
 
 }
