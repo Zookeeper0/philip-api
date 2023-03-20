@@ -1,4 +1,4 @@
-import { Controller, Post, Logger, Body, Get } from "@nestjs/common";
+import { Controller, Post, Logger, Body, Get, Session } from "@nestjs/common";
 import { AdminRepository } from "./admin.repository";
 import { AdminService } from "./admin.service";
 import { CityDto } from "../category/dto/city.dto";
@@ -22,5 +22,13 @@ export class AdminController {
   @Post("/signin")
   signIn(@Body() signInAdminDto: SignInAdminDto) {
     return this.adminService.signInAdmin(signInAdminDto);
+  }
+
+  @Get("/visit")
+  checkTodayVisit(@Session() session: Record<string, any>) {
+    Logger.log("hi visitor");
+    console.log("session", session);
+    session.visits = session.visits ? session.visits + 1 : 1;
+    return { count: "Hello" };
   }
 }

@@ -40,9 +40,6 @@ export class PostsController {
 
   @Get("/promotion")
   getPromotionPosts(@Query("category") category: string) {
-    console.log("Hello promotion");
-    console.log("category", category);
-    Logger.error("Hello");
     return this.postsRepository.getPromotionPosts(category);
   }
 
@@ -66,12 +63,4 @@ export class PostsController {
   patchViews(@Param("oid") countOid: string) {
     return this.postsService.countViews(countOid);
   }
-
-  // @Post("/images")
-  // @UseInterceptors(FilesInterceptor("file", null, multerDiskOptions))
-  // @Bind(UploadedFiles())
-  // uploadFile(files, @Res() res: Response) {
-  //   const data = files.map((v) => v.filename);
-  //   return res.json(data);
-  // }
 }

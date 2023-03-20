@@ -8,7 +8,6 @@ export class UserController {
     private readonly userRepository: UserRepository,
     private readonly userService: UserService
   ) {}
-  private logger = new Logger("AdminController");
 
   // 카카오 로그인
   @Post("/kakao/callback")

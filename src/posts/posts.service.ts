@@ -26,8 +26,7 @@ export class PostsService {
     try {
       const filesResult = [];
       const postOid = uuid();
-      console.log("files :", filesData);
-      console.log("postOid:", data);
+
       const myInfo: any = await verifyToken(data.token);
       data.oid = postOid;
       data.adminOid = myInfo.oid;
@@ -47,8 +46,6 @@ export class PostsService {
           };
           filesResult.push(res);
         });
-
-        console.log("result :", filesResult);
 
         const Data = await Promise.all(
           filesResult.map((file) => files.create(file, { transaction: t }))
@@ -85,7 +82,6 @@ export class PostsService {
 
   async countViews(countOid: string) {
     const t = await this.seqeulize.transaction();
-    Logger.log("in");
     try {
       /** data */
       const postsData = await post.increment(

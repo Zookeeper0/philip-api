@@ -75,7 +75,6 @@ export class PostsRepository {
   }
 
   async getPromotionPosts(category) {
-    console.log("in promotion");
     try {
       if (category === ALL_OID) {
         return await post.findAll({
