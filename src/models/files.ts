@@ -4,9 +4,7 @@ import {
 
 export interface filesAttributes {
     oid: string;
-    workOid?: string;
-    postOId?: string;
-    controlName?: string;
+    postOid?: string;
     sortNo?: number;
     path?: string;
     fileName?: string;
@@ -37,22 +35,11 @@ export class files extends Model<filesAttributes, filesAttributes> implements fi
     	oid!: string;
 
     @Column({
+    	field: "post_oid",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
-    	workOid?: string;
-
-    @Column({
-    	allowNull: true,
-    	type: DataType.STRING(100) 
-    })
-    	postOId?: string;
-
-    @Column({
-    	allowNull: true,
-    	type: DataType.STRING(100) 
-    })
-    	controlName?: string;
+    	postOid?: string;
 
     @Column({
     	allowNull: true,
@@ -61,32 +48,33 @@ export class files extends Model<filesAttributes, filesAttributes> implements fi
     	sortNo?: number;
 
     @Column({
-    	field: "Path",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
     	path?: string;
 
     @Column({
+    	field: "file_name",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
     	fileName?: string;
 
     @Column({
+    	field: "file_extension",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
     	fileExtension?: string;
 
     @Column({
-    	field: "Size",
     	allowNull: true,
     	type: DataType.INTEGER 
     })
     	size?: number;
 
     @Column({
+    	field: "original_name",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
@@ -99,12 +87,14 @@ export class files extends Model<filesAttributes, filesAttributes> implements fi
     	mimetype?: string;
 
     @Column({
+    	field: "done_yn",
     	allowNull: true,
     	type: DataType.INTEGER 
     })
     	doneYn?: number;
 
     @Column({
+    	field: "created_at",
     	allowNull: true,
     	type: DataType.DATE,
     	defaultValue: Sequelize.literal("now()") 
@@ -112,6 +102,7 @@ export class files extends Model<filesAttributes, filesAttributes> implements fi
     	createdAt?: Date;
 
     @Column({
+    	field: "updated_at",
     	allowNull: true,
     	type: DataType.DATE 
     })

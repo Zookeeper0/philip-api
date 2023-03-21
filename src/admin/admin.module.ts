@@ -1,17 +1,15 @@
 import { Module } from "@nestjs/common";
-import { AdminService } from "./admin.service";
-import { AdminController } from "./admin.controller";
 import { SequelizeModule } from "@nestjs/sequelize";
-import { admin } from "src/models";
+import { AdminController } from "./admin.controller";
+import { AdminService } from "./admin.service";
 import { AdminRepository } from "./admin.repository";
-import { AuthService } from "src/auth/auth.service";
-import { JwtService } from "@nestjs/jwt";
-import { AuthModule } from "src/auth/auth.module";
-import { TokenService } from "src/token/token.service";
+import { Utils } from "src/util/common.utils";
+import { admin } from "src/models";
 
 @Module({
-  imports: [SequelizeModule.forFeature([admin]), AuthModule],
+  imports: [SequelizeModule.forFeature([admin])],
   controllers: [AdminController],
-  providers: [AdminService, AdminRepository, AuthService, JwtService],
+  exports: [AdminService],
+  providers: [AdminService, AdminRepository, Utils],
 })
 export class AdminModule {}

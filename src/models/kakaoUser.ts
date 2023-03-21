@@ -27,12 +27,14 @@ export class kakaoUser extends Model<kakaoUserAttributes, kakaoUserAttributes> i
     	oid!: string;
 
     @Column({
+    	field: "access_token",
     	allowNull: true,
     	type: DataType.STRING(255) 
     })
     	accessToken?: string;
 
     @Column({
+    	field: "created_at",
     	allowNull: true,
     	type: DataType.DATE,
     	defaultValue: Sequelize.literal("now()") 
@@ -40,6 +42,7 @@ export class kakaoUser extends Model<kakaoUserAttributes, kakaoUserAttributes> i
     	createdAt?: Date;
 
     @Column({
+    	field: "updated_at",
     	allowNull: true,
     	type: DataType.DATE 
     })

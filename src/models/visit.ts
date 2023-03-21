@@ -32,6 +32,7 @@ export class visit extends Model<visitAttributes, visitAttributes> implements vi
     	ip?: string;
 
     @Column({
+    	field: "created_at",
     	allowNull: true,
     	type: DataType.DATE,
     	defaultValue: Sequelize.literal("now()") 

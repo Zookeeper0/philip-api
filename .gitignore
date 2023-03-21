@@ -6,9 +6,9 @@
 # Node artifact files
 node_modules/
 dist/
-.env
 .prettierrc
 
+.env
 # Compiled Java class files
 *.class
 

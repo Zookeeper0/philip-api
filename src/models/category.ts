@@ -33,6 +33,7 @@ export class category extends Model<categoryAttributes, categoryAttributes> impl
     	name?: string;
 
     @Column({
+    	field: "created_at",
     	allowNull: true,
     	type: DataType.DATE,
     	defaultValue: Sequelize.literal("now()") 
@@ -40,6 +41,7 @@ export class category extends Model<categoryAttributes, categoryAttributes> impl
     	createdAt?: Date;
 
     @Column({
+    	field: "updated_at",
     	allowNull: true,
     	type: DataType.DATE 
     })

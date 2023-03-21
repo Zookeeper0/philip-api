@@ -1,21 +1,24 @@
 import { Module } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
-import { TokenService } from "src/token/token.service";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { AdminRepository } from "src/admin/admin.repository";
+import { AdminService } from "src/admin/admin.service";
+import { admin } from "src/models";
+import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { AccessTokenStrategy } from "./strategies/access-token.strategy";
-import { LocalStrategy } from "./strategies/local.strategy";
-import { RefreshTokenStrategy } from "./strategies/refresh-token.strategy";
+import { JwtStrategy } from "./strategies/passport.jwt.strategy";
 
 @Module({
-  imports: [PassportModule],
-  providers: [
-    AuthService,
-    TokenService,
-    LocalStrategy,
-    JwtService,
-    AccessTokenStrategy,
-    RefreshTokenStrategy,
+  imports: [
+    PassportModule,
+    SequelizeModule.forFeature([admin]),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: "300s" },
+    }),
   ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy, AdminService, AdminRepository],
 })
 export class AuthModule {}

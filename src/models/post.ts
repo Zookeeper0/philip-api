@@ -5,7 +5,7 @@ import {
 export interface postAttributes {
     oid: string;
     adminOid?: string;
-    categoryOId?: string;
+    categoryOid?: string;
     title?: string;
     address?: string;
     phoneNumber?: string;
@@ -13,6 +13,8 @@ export interface postAttributes {
     views?: number;
     createdAt?: Date;
     updatedAt?: Date;
+    cityOid?: string;
+    promotion?: boolean;
 }
 
 @Table({
@@ -33,16 +35,18 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     	oid!: string;
 
     @Column({
+    	field: "admin_oid",
     	allowNull: true,
-    	type: DataType.STRING(50) 
+    	type: DataType.STRING(100) 
     })
     	adminOid?: string;
 
     @Column({
+    	field: "category_oid",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
-    	categoryOId?: string;
+    	categoryOid?: string;
 
     @Column({
     	allowNull: true,
@@ -57,6 +61,7 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     	address?: string;
 
     @Column({
+    	field: "phone_number",
     	allowNull: true,
     	type: DataType.STRING(50) 
     })
@@ -75,6 +80,7 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     	views?: number;
 
     @Column({
+    	field: "created_at",
     	allowNull: true,
     	type: DataType.DATE,
     	defaultValue: Sequelize.literal("now()") 
@@ -82,9 +88,23 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     	createdAt?: Date;
 
     @Column({
+    	field: "updated_at",
     	allowNull: true,
     	type: DataType.DATE 
     })
     	updatedAt?: Date;
+
+    @Column({
+    	field: "city_oid",
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	cityOid?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.BOOLEAN 
+    })
+    	promotion?: boolean;
 
 }

@@ -31,6 +31,7 @@ export class admin extends Model<adminAttributes, adminAttributes> implements ad
     	oid!: string;
 
     @Column({
+    	field: "admin_id",
     	allowNull: true,
     	type: DataType.STRING(50) 
     })
@@ -55,6 +56,7 @@ export class admin extends Model<adminAttributes, adminAttributes> implements ad
     	birth?: string;
 
     @Column({
+    	field: "created_at",
     	allowNull: true,
     	type: DataType.DATE,
     	defaultValue: Sequelize.literal("now()") 
@@ -62,6 +64,7 @@ export class admin extends Model<adminAttributes, adminAttributes> implements ad
     	createdAt?: Date;
 
     @Column({
+    	field: "updated_at",
     	allowNull: true,
     	type: DataType.DATE 
     })

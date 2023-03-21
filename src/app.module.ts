@@ -5,7 +5,13 @@ import { SequelizeModule } from "@nestjs/sequelize";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AdminModule } from "./admin/admin.module";
-import { TokenModule } from "./token/token.module";
+import { PostsModule } from "./posts/posts.module";
+import { MulterModule } from "@nestjs/platform-express/multer";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
+import { CategoryModule } from "./category/category.module";
+import { visit } from "./models";
+import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 
 @Module({
@@ -21,9 +27,18 @@ import { AuthModule } from "./auth/auth.module";
       synchronize: true,
       timezone: "+09:00",
     }),
-    AdminModule,
-    TokenModule,
+    SequelizeModule.forFeature([visit]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "uploads"),
+    }),
+    MulterModule.register({
+      dest: "./uploads",
+    }),
     AuthModule,
+    AdminModule,
+    PostsModule,
+    CategoryModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
