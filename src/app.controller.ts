@@ -22,9 +22,10 @@ export class AppController {
   @Get("/")
   async checkTodayVisit(
     @Req() request: Request,
-    @Res({ passthrough: true }) response: Response
+    @Res({ passthrough: true }) response: Response,
+    @Ip() ip: string
   ) {
-    return this.appService.checkTodayVisit(request, response);
+    return this.appService.checkTodayVisit(request, response, ip);
   }
 
   @Get("/visit")
