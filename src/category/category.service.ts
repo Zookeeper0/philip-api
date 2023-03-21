@@ -62,8 +62,8 @@ export class CategoryService {
       await t.commit();
     } catch (err) {
       Logger.error(err);
-      throw new InternalServerErrorException(err);
       await t.rollback();
+      throw new InternalServerErrorException(err);
     }
   }
 }

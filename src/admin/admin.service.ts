@@ -3,6 +3,8 @@ import {
   UnauthorizedException,
   NotAcceptableException,
   NotFoundException,
+  HttpException,
+  HttpStatus,
 } from "@nestjs/common";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { v1 as uuid } from "uuid";
@@ -13,12 +15,13 @@ import * as crypto from "crypto";
 import { admin } from "src/models";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
 import { createAccessToken, getTokenInfo } from "src/common/jwt.fn";
+import { AdminRepository } from "./admin.repository";
 
 @Injectable()
 export class AdminService {
   constructor(
     private readonly seqeulize: Sequelize,
-    private readonly util: Utils
+    private readonly adminRepository: AdminRepository
   ) {}
 
   /** 관리자 로그인 */
@@ -43,10 +46,9 @@ export class AdminService {
       }
 
       const { oid } = signinData;
+      const payload = { oid, adminId };
       // 유저 토큰 생성
-      const payload = { oid };
       const accessToken = await getTokenInfo(payload);
-
       return accessToken;
     } catch (err) {
       console.log(err);

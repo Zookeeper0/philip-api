@@ -1,27 +1,26 @@
 import {
   Controller,
   Post,
-  Logger,
   Get,
   Body,
   Param,
   Query,
   Bind,
   Req,
+  UseGuards,
 } from "@nestjs/common";
 import {
   Patch,
-  Res,
-  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common/decorators";
 import { FilesInterceptor } from "@nestjs/platform-express/multer";
-import { CreatePostDto } from "./dto/create-post.dto";
 import { PostsRepository } from "./posts.repository";
 import { PostsService } from "./posts.service";
-import { Response } from "express";
 import { multerDiskOptions } from "src/common/multerOptions";
+import { JwtKakaoAuthGuard } from "src/auth/guard/kakao.auth.guard";
+import { Request } from "express";
+import { JwtUserAuthGuard } from "src/auth/guard/user.auth.guard";
 
 @Controller("posts")
 export class PostsController {
@@ -40,9 +39,6 @@ export class PostsController {
 
   @Get("/promotion")
   getPromotionPosts(@Query("category") category: string) {
-    console.log("Hello promotion");
-    console.log("category", category);
-    Logger.error("Hello");
     return this.postsRepository.getPromotionPosts(category);
   }
 
@@ -55,9 +51,11 @@ export class PostsController {
     return this.postsService.addPost(data, filesData);
   }
 
+  // @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
-  getOnePost(@Param("oid") oid) {
-    this.postsService.countViews(oid);
+  async getOnePost(@Param("oid") oid: string, @Req() req: Request) {
+    console.log("req.headers", req.headers);
+    await this.postsService.countViews(oid);
     return this.postsRepository.getOnePost(oid);
   }
 
@@ -66,12 +64,4 @@ export class PostsController {
   patchViews(@Param("oid") countOid: string) {
     return this.postsService.countViews(countOid);
   }
-
-  // @Post("/images")
-  // @UseInterceptors(FilesInterceptor("file", null, multerDiskOptions))
-  // @Bind(UploadedFiles())
-  // uploadFile(files, @Res() res: Response) {
-  //   const data = files.map((v) => v.filename);
-  //   return res.json(data);
-  // }
 }

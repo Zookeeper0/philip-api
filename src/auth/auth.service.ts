@@ -1,35 +1,42 @@
-import { Injectable } from "@nestjs/common";
-import { pbkdf2Sync } from "crypto";
-import { admin } from "src/models";
+import { Injectable, Logger } from "@nestjs/common";
+import { Sequelize } from "sequelize-typescript";
+
+import { admin, kakaoUser } from "src/models";
 
 @Injectable()
 export class AuthService {
-  constructor() {}
+  constructor(private readonly seqeulize: Sequelize) {}
 
-  async validateUser(userId: string, password: string): Promise<any> {
-    // const user = await this.userService.findUser(userId);
-    // const inputHash = pbkdf2Sync(
-    //   password,
-    //   user?.salt || "",
-    //   1000,
-    //   64,
-    //   "sha512"
-    // ).toString("hex");
-    // if (user && user.password === inputHash) {
-    //   return user;
-    // }
-    // return null;
+  async tokenValidate(payload) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const findId = await admin.findOne({
+        where: {
+          adminId: payload.adminId,
+        },
+      });
+      await t.commit();
+      return findId;
+    } catch (err) {
+      Logger.error(err);
+      await t.rollback();
+    }
   }
 
-  async validRefreshToken(userId: string, token: string): Promise<any> {
-    // return this.prisma.refreshToken.findFirst({
-    //   where: { userId: userId, token: token },
-    // });
-  }
-
-  async generateUserToken(admin: admin) {
-    // const accessToken = this.tokenService.generateAccessToken(user);
-    // const refreshToken = await this.tokenService.generateRefreshToken(user);
-    // return { accessToken, refreshToken };
+  async kakaoValidate(payload) {
+    const t = await this.seqeulize.transaction();
+    try {
+      console.log("type:", typeof payload.kakaoId);
+      const findId = await kakaoUser.findOne({
+        where: {
+          kakaoId: payload.kakaoId.toString(),
+        },
+      });
+      await t.commit();
+      return findId;
+    } catch (err) {
+      Logger.error(err);
+      await t.rollback();
+    }
   }
 }

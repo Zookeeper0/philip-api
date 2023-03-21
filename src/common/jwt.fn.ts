@@ -14,9 +14,5 @@ export const createAccessToken = (payload: any) => {
 export const getTokenInfo = (user: any) => {
   console.log(user, "user in getToken");
   const accessToken = createAccessToken(user);
-  return {
-    ...user,
-    accessToken: accessToken,
-    accessTokenExpiry: Date.now() + ACCESS_TOKEN_EXPIRES,
-  };
+  return { accessToken };
 };

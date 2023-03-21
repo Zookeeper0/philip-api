@@ -10,6 +10,9 @@ import { MulterModule } from "@nestjs/platform-express/multer";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { CategoryModule } from "./category/category.module";
+import { visit } from "./models";
+import { UserModule } from "./user/user.module";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -24,15 +27,18 @@ import { CategoryModule } from "./category/category.module";
       synchronize: true,
       timezone: "+09:00",
     }),
+    SequelizeModule.forFeature([visit]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "uploads"),
     }),
     MulterModule.register({
       dest: "./uploads",
     }),
+    AuthModule,
     AdminModule,
     PostsModule,
     CategoryModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
