@@ -47,6 +47,8 @@ export class PostsService {
           filesResult.push(res);
         });
 
+        console.log("result :", filesResult);
+
         const Data = await Promise.all(
           filesResult.map((file) => files.create(file, { transaction: t }))
         );
@@ -82,6 +84,7 @@ export class PostsService {
 
   async countViews(countOid: string) {
     const t = await this.seqeulize.transaction();
+    Logger.log("in");
     try {
       /** data */
       const postsData = await post.increment(

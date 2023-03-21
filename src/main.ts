@@ -1,6 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as fs from "fs";
+import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
   // const httpsOptions = {
@@ -18,6 +19,7 @@ async function bootstrap() {
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     credentials: true,
   });
+  app.use(cookieParser());
   await app.listen(3001);
 }
 bootstrap();

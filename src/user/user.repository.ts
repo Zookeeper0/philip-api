@@ -7,8 +7,20 @@ import { post } from "src/models";
 
 @Injectable()
 export class UserRepository {
-  constructor(
-    private readonly sequelize: Sequelize,
-    private readonly util: Utils
-  ) {}
+  constructor(private readonly sequelize: Sequelize) {}
+
+  async findById(kakaoId: string) {
+    return await this.sequelize.query(
+      `
+        SELECT
+          k.kakao_id
+        FROM
+          kakao_user AS k
+          WHERE k.kakao_id = '${kakaoId}';
+      `,
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+  }
 }

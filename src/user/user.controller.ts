@@ -1,4 +1,4 @@
-import { Controller, Post, Logger, Query } from "@nestjs/common";
+import { Controller, Post, Body, Logger, Query } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserRepository } from "./user.repository";
 
@@ -10,8 +10,9 @@ export class UserController {
   ) {}
 
   // 카카오 로그인
-  @Post("/kakao/callback")
-  signIn(@Query("code") code: string) {
+  @Post("/kakao")
+  login(@Body() code: string) {
+    console.log(code);
     return this.userService.kakaoLogin(code);
   }
 }

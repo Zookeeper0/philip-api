@@ -8,6 +8,7 @@ import {
   Query,
   Bind,
   Req,
+  UseGuards,
 } from "@nestjs/common";
 import {
   Patch,
@@ -20,8 +21,9 @@ import { FilesInterceptor } from "@nestjs/platform-express/multer";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { PostsRepository } from "./posts.repository";
 import { PostsService } from "./posts.service";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { multerDiskOptions } from "src/common/multerOptions";
+import { JwtAuthGuard } from "src/auth/guard/auth.guard";
 
 @Controller("posts")
 export class PostsController {
@@ -53,7 +55,9 @@ export class PostsController {
   }
 
   @Get("/:oid")
-  getOnePost(@Param("oid") oid) {
+  @UseGuards(JwtAuthGuard)
+  getOnePost(@Param("oid") oid, @Req() req: Request) {
+    console.log("req.headers :", req.headers);
     this.postsService.countViews(oid);
     return this.postsRepository.getOnePost(oid);
   }

@@ -10,10 +10,7 @@ const ALL_OID = "fb673f00-c152-11ed-8fb3-59762efda8c3";
 
 @Injectable()
 export class PostsRepository {
-  constructor(
-    private readonly sequelize: Sequelize,
-    private readonly util: Utils
-  ) {}
+  constructor(private readonly sequelize: Sequelize) {}
 
   async getOnePost(oid: string) {
     return await this.sequelize.query(
@@ -75,6 +72,7 @@ export class PostsRepository {
   }
 
   async getPromotionPosts(category) {
+    console.log("in promotion");
     try {
       if (category === ALL_OID) {
         return await post.findAll({
