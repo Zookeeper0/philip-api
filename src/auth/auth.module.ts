@@ -4,15 +4,15 @@ import { PassportModule } from "@nestjs/passport";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { AdminRepository } from "src/admin/admin.repository";
 import { AdminService } from "src/admin/admin.service";
-import { admin } from "src/models";
+import { admin, kakaoUser } from "src/models";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { JwtStrategy } from "./strategies/passport.jwt.strategy";
+import { JwtStrategy } from "./strategies/user.jwt.strategy";
 
 @Module({
   imports: [
     PassportModule,
-    SequelizeModule.forFeature([admin]),
+    SequelizeModule.forFeature([admin, kakaoUser]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: "300s" },

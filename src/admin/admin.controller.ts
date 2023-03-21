@@ -1,20 +1,9 @@
-import {
-  Controller,
-  Post,
-  Logger,
-  Body,
-  Get,
-  Res,
-  UseGuards,
-  Req,
-} from "@nestjs/common";
+import { Controller, Post, Body, Res } from "@nestjs/common";
 import { AdminRepository } from "./admin.repository";
 import { AdminService } from "./admin.service";
-import { CityDto } from "../category/dto/city.dto";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
-import { Response, Request } from "express";
-import { JwtAuthGuard } from "src/auth/guard/auth.guard";
+import { Response } from "express";
 
 @Controller("admin")
 export class AdminController {
@@ -40,8 +29,7 @@ export class AdminController {
       //하루
       maxAge: 24 * 60 * 60 * 1000,
     });
-    return res.send({
-      message: "success",
-    });
+    console.log(accessToken.accessToken);
+    return res.send(accessToken.accessToken);
   }
 }
