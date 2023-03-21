@@ -1,15 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { Sequelize } from "sequelize-typescript";
 import sequelize from "sequelize";
-import { Utils } from "src/util/common.utils";
-import { Logger } from "@nestjs/common/services";
-import { post } from "src/models";
+import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 export class UserRepository {
   constructor(private readonly sequelize: Sequelize) {}
 
   async findById(kakaoId: string) {
+    console.log("access_token", kakaoId);
     return await this.sequelize.query(
       `
         SELECT

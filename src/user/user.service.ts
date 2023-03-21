@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { Sequelize } from "sequelize-typescript";
-import { getTokenInfo } from "src/common/jwt.fn";
 import { getTokenFromKakao, getUserFromKakao } from "src/common/kakaoOptions";
 import { kakaoUser } from "src/models";
 import { UserRepository } from "./user.repository";
 import { v1 as uuid } from "uuid";
+import { getTokenInfo } from "src/common/jwt.fn";
+
 @Injectable()
 export class UserService {
   constructor(
@@ -15,7 +16,6 @@ export class UserService {
   // 유저 로그인
   async kakaoLogin(authCode: string) {
     const tokenResponse = await getTokenFromKakao(authCode);
-
     console.log("..", tokenResponse);
     const userInfo = await getUserFromKakao(tokenResponse);
 
@@ -28,12 +28,13 @@ export class UserService {
       const oid = uuid();
       const data = {
         oid: oid,
+        accessToken: tokenResponse.access_token,
         kakaoId: kakaoId,
       };
       await kakaoUser.create(data);
     }
-    const accessToken = await getTokenInfo({ kakaoId });
-    console.log(userInfo);
-    return accessToken;
+    const data = await getTokenInfo({ kakaoId });
+    console.log("kakaoLogin :", data);
+    return data.accessToken;
   }
 }

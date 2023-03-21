@@ -43,7 +43,7 @@ export class AppService {
     }
   }
 
-  /** 주석  */
+  /** 오늘 방문했는지 체크, 쿠키에 기록이없다면 count + 1  */
   async checkTodayVisit(request: Request, response: Response, ip: string) {
     /** 오늘 Date 객체 init */
     const now = new Date();

@@ -5,7 +5,7 @@ import { AdminService } from "src/admin/admin.service";
 import { AuthService } from "../auth.service";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, "jwt-kakao") {
   constructor(
     private readonly authService: AuthService,
     private readonly adminService: AdminService
@@ -18,14 +18,24 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload, done): Promise<any> {
-    const user = await this.authService.tokenValidate(payload);
-    if (!user) {
+    console.log("payload :", payload);
+    let admin = null;
+    let user = null;
+    if (payload.adminId) {
+      admin = await this.authService.tokenValidate(payload);
+    } else {
+      user = await this.authService.kakaoValidate(payload);
+    }
+
+    console.log("check", admin, user);
+    if (!user && !admin) {
+      console.log("if in!");
       return done(
         new UnauthorizedException({ message: "user does not exist" }),
         false
       );
     }
 
-    return done(null, user);
+    return done(null, user || admin);
   }
 }
