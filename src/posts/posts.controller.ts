@@ -7,7 +7,6 @@ import {
   Query,
   Bind,
   Req,
-  UseGuards,
 } from "@nestjs/common";
 import {
   Patch,
@@ -30,16 +29,13 @@ export class PostsController {
   ) {}
 
   @Get("/")
-  getAllPosts(
-    @Query("category") category: string,
-    @Query("search") search: string
-  ) {
-    return this.postsRepository.getAllPosts(category, search);
+  getAllPosts(@Req() req: Request) {
+    return this.postsRepository.getAllPosts(req);
   }
 
   @Get("/promotion")
-  getPromotionPosts(@Query("category") category: string) {
-    return this.postsRepository.getPromotionPosts(category);
+  getPromotionPosts(@Req() req: Request) {
+    return this.postsRepository.getPromotionPosts(req);
   }
 
   /** FilesInterceptor의 첫번째 속성 이름이 formData의 이미지가 담겨있는 key값과 같아야한다.*/
@@ -54,7 +50,6 @@ export class PostsController {
   // @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
   async getOnePost(@Param("oid") oid: string, @Req() req: Request) {
-    console.log("req.headers", req.headers);
     await this.postsService.countViews(oid);
     return this.postsRepository.getOnePost(oid);
   }

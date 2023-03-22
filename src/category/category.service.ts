@@ -17,16 +17,6 @@ export class CategoryService {
     private readonly util: Utils
   ) {}
 
-  /** GET 모든 카테고리 데이터 프론트 상단 nav 항목 */
-  async getAllCategory() {
-    try {
-      return await category.findAll();
-    } catch (err) {
-      Logger.error(err);
-      throw new InternalServerErrorException(err);
-    }
-  }
-
   /** POST 카테고리 생성 ( 관리자 ) */
   async createCategory(categoryDto: CategoryDto) {
     const t = await this.seqeulize.transaction();
