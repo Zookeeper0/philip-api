@@ -21,7 +21,7 @@ export class UserController {
       //하루
       maxAge: 24 * 60 * 60 * 1000,
     });
-    console.log("login: ", accessToken);
+
     return res.send(accessToken);
   }
 }
