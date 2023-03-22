@@ -17,13 +17,13 @@ export class CategoryRepository {
       `
           SELECT * 
             FROM category
-              order by
-                case
-                  when name = '전체' then 0
-                  when name = 'KTV' then 1
-                  when name = 'JTV' then 2
-                  when name = 'BAR' then 3  
-                end;
+              ORDER BY
+                CASE
+                  WHEN name = '전체' then 0
+                  WHEN name = 'KTV' then 1
+                  WHEN name = 'JTV' then 2
+                  WHEN name = 'BAR' then 3
+                END;
         `,
       {
         type: sequelize.QueryTypes.SELECT,
