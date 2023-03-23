@@ -42,9 +42,12 @@ export class PostsRepository {
 
   async getAllPosts(req: Request) {
     try {
-      const { search, category } = req.query;
+      const { city, search, category } = req.query;
       if (category === ALL_OID) {
-        const whereArr = [["AND p.title LIKE :search", search]];
+        const whereArr = [
+          ["AND p.title LIKE :search", search],
+          ["AND p.city_oid LIKE :city", city],
+        ];
         //카테고리가 전체(디폴트값)이고 제목에 검색어가 포함됐나?
         return await this.sequelize.query(
           `
@@ -71,6 +74,7 @@ export class PostsRepository {
         const whereArr = [
           ["AND p.title LIKE :search", search],
           ["AND p.category_oid LIKE :category", category],
+          ["AND p.city_oid LIKE :city", city],
         ];
         return await this.sequelize.query(
           `
@@ -101,9 +105,11 @@ export class PostsRepository {
   }
 
   async getPromotionPosts(req: Request) {
-    const { category } = req.query;
+    console.log("req", req);
+    const { category, city } = req.query;
     try {
       if (category === ALL_OID) {
+        const whereArr = [["AND p.city_oid LIKE :city", city]];
         return await this.sequelize.query(
           `
           SELECT
@@ -118,13 +124,18 @@ export class PostsRepository {
             INNER JOIN category AS c
                 ON p.category_oid = c.oid
             WHERE p.promotion = true
+            ${this.util.likeGenerator(whereArr, req.query)}
         `,
           {
             type: sequelize.QueryTypes.SELECT,
+            replacements: req.query,
           }
         );
       } else {
-        const whereArr = [["AND p.category_oid LIKE :category", category]];
+        const whereArr = [
+          ["AND p.category_oid LIKE :category", category],
+          ["AND p.city_oid LIKE :city", city],
+        ];
         return await this.sequelize.query(
           `
           SELECT

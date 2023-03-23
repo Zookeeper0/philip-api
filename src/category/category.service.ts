@@ -33,15 +33,6 @@ export class CategoryService {
     }
   }
 
-  /** GET 모든 City 카테고리 데이터 항목 */
-  async getAllCity(cityDto: CityDto) {
-    try {
-      return await city.findAll();
-    } catch (error) {
-      console.log(error);
-      Logger.error(error);
-    }
-  }
   /** POST City 카테고리 생성, ( 앙헬레스, 세부, 마닐라, ? ) */
   async createCity(cityDto: CityDto) {
     const t = await this.seqeulize.transaction();

@@ -22,15 +22,15 @@ export class CategoryController {
   getAllCategory() {
     return this.categoryRepository.getAllCategory();
   }
-  /** 씨티카테고리 todtjd */
+  /** 씨티카테고리 추가 */
   @Post("/city")
   addCity(@Body() cityDto: CityDto) {
     return this.categoryService.createCity(cityDto);
   }
 
-  /** 씨티카테고리 추가 */
+  /** 씨티카테고리 항목 획득 */
   @Get("/city")
-  getAllCity(@Body() cityDto: CityDto) {
-    return this.categoryService.getAllCity(cityDto);
+  getAllCity() {
+    return this.categoryRepository.getAllCity();
   }
 }
