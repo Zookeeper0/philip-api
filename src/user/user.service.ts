@@ -16,11 +16,10 @@ export class UserService {
   // 유저 로그인
   async kakaoLogin(authCode: string) {
     const tokenResponse = await getTokenFromKakao(authCode);
-    console.log("..", tokenResponse);
     const userInfo = await getUserFromKakao(tokenResponse);
 
     const { id: kakaoId } = userInfo;
-    console.log(kakaoId);
+
     // DB에 존재하는 유저인지 확인
     const user = await this.userRepository.findById(kakaoId);
 
@@ -34,7 +33,6 @@ export class UserService {
       await kakaoUser.create(data);
     }
     const data = await getTokenInfo({ kakaoId });
-    console.log("kakaoLogin :", data);
     return data.accessToken;
   }
 }

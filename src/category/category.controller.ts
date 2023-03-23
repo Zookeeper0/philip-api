@@ -11,7 +11,7 @@ export class CategoryController {
     private readonly categoryRepository: CategoryRepository
   ) {}
 
-  // 카테고리 생성
+  /** 카테고리 생성 */
   @Post("/")
   addCategory(@Body() categoryDto: CategoryDto) {
     return this.categoryService.createCategory(categoryDto);

@@ -26,7 +26,6 @@ export class AuthService {
   async kakaoValidate(payload) {
     const t = await this.seqeulize.transaction();
     try {
-      console.log("type:", typeof payload.kakaoId);
       const findId = await kakaoUser.findOne({
         where: {
           kakaoId: payload.kakaoId.toString(),

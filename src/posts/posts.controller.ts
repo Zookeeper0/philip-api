@@ -28,11 +28,13 @@ export class PostsController {
     private readonly postsService: PostsService
   ) {}
 
+  /** GET 모든 게시물 */
   @Get("/")
   getAllPosts(@Req() req: Request) {
     return this.postsRepository.getAllPosts(req);
   }
 
+  /** GET 모든 프로모션 게시물  */
   @Get("/promotion")
   getPromotionPosts(@Req() req: Request) {
     return this.postsRepository.getPromotionPosts(req);
@@ -47,6 +49,7 @@ export class PostsController {
     return this.postsService.addPost(data, filesData);
   }
 
+  /**  GET 디테일 페이지 정보 요청 */
   // @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
   async getOnePost(@Param("oid") oid: string, @Req() req: Request) {

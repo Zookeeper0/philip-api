@@ -16,6 +16,7 @@ export class PostsRepository {
     private readonly util: Utils
   ) {}
 
+  /**  GET 디테일 페이지 정보 요청 */
   async getOnePost(oid: string) {
     return await this.sequelize.query(
       `
@@ -40,6 +41,7 @@ export class PostsRepository {
     );
   }
 
+  /** GET 모든 게시물 */
   async getAllPosts(req: Request) {
     try {
       const { city, search, category } = req.query;
@@ -104,8 +106,8 @@ export class PostsRepository {
     }
   }
 
+  /** GET 모든 프로모션 게시물  */
   async getPromotionPosts(req: Request) {
-    console.log("req", req);
     const { category, city } = req.query;
     try {
       if (category === ALL_OID) {

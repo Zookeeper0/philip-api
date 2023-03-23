@@ -19,6 +19,7 @@ export class AppController {
     private readonly seqeulize: Sequelize
   ) {}
 
+  /** 오늘 방문했는지 검증, db에 있는 ip를 통해 비교 */
   @Get("/")
   async checkTodayVisit(
     @Req() req: Request,
@@ -28,6 +29,7 @@ export class AppController {
     return this.appService.checkTodayVisit(req, res, ip);
   }
 
+  /** GET 오늘자 방문수 획득 */
   @Get("/visit")
   async getVisitCount() {
     return this.appService.getVisitCount();

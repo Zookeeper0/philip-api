@@ -18,7 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt-kakao") {
   }
 
   async validate(payload, done): Promise<any> {
-    console.log("payload :", payload);
     let admin = null;
     let user = null;
     if (payload.adminId) {
@@ -27,9 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt-kakao") {
       user = await this.authService.kakaoValidate(payload);
     }
 
-    console.log("check", admin, user);
     if (!user && !admin) {
-      console.log("if in!");
       return done(
         new UnauthorizedException({ message: "user does not exist" }),
         false

@@ -28,7 +28,6 @@ export class AdminService {
   // createAdmindto( adminId, password )
   async signInAdmin(signinAdmin: SignInAdminDto) {
     try {
-      console.log(signinAdmin);
       const { adminId, password } = signinAdmin;
       const signinData = await admin.findOne({
         where: {
@@ -41,7 +40,6 @@ export class AdminService {
         signinData.password.toString() !==
         crypto.createHash("sha512").update(password).digest("hex")
       ) {
-        console.log("signinData.password :", signinData.password);
         throw new NotFoundException("비밀번호가 일치하지 않습니다.");
       }
 
@@ -75,7 +73,6 @@ export class AdminService {
 
       // 위의 조건과 같은 조건이 있다면 중복된 아이디 알림
       if (adminData?.adminId) {
-        console.log("중복된 아이디 입니다.");
         throw new NotAcceptableException();
       }
 

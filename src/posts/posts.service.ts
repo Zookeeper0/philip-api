@@ -46,8 +46,6 @@ export class PostsService {
           filesResult.push(res);
         });
 
-        console.log("result :", filesResult);
-
         const Data = await Promise.all(
           filesResult.map((file) => files.create(file, { transaction: t }))
         );
@@ -81,6 +79,7 @@ export class PostsService {
     }
   }
 
+  /** 디테일 페이지 들어갈때 방문자수 카운트 */
   async countViews(countOid: string) {
     const t = await this.seqeulize.transaction();
     try {
