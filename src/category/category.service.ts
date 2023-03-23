@@ -26,10 +26,10 @@ export class CategoryService {
       Logger.log(categoryDto);
       const categoryData = await category.create(categoryDto);
       await t.commit();
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Logger.error(error);
       await t.rollback();
-      throw new InternalServerErrorException(err);
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -37,9 +37,9 @@ export class CategoryService {
   async getAllCity(cityDto: CityDto) {
     try {
       return await city.findAll();
-    } catch (err) {
-      console.log(err);
-      Logger.error(err);
+    } catch (error) {
+      console.log(error);
+      Logger.error(error);
     }
   }
   /** POST City 카테고리 생성, ( 앙헬레스, 세부, 마닐라, ? ) */
@@ -50,10 +50,10 @@ export class CategoryService {
       cityDto.oid = oid;
       const cityData = await city.create(cityDto);
       await t.commit();
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Logger.error(error);
       await t.rollback();
-      throw new InternalServerErrorException(err);
+      throw new InternalServerErrorException(error);
     }
   }
 }

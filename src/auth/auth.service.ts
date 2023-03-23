@@ -17,8 +17,8 @@ export class AuthService {
       });
       await t.commit();
       return findId;
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Logger.error(error);
       await t.rollback();
     }
   }
@@ -34,8 +34,8 @@ export class AuthService {
       });
       await t.commit();
       return findId;
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Logger.error(error);
       await t.rollback();
     }
   }

@@ -94,9 +94,9 @@ export class PostsRepository {
           }
         );
       }
-    } catch (err) {
-      Logger.error(err);
-      throw new InternalServerErrorException(err);
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -147,9 +147,9 @@ export class PostsRepository {
           }
         );
       }
-    } catch (err) {
-      Logger.error(err);
-      throw new InternalServerErrorException(err);
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }

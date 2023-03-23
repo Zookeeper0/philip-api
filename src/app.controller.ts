@@ -21,11 +21,11 @@ export class AppController {
 
   @Get("/")
   async checkTodayVisit(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
     @Ip() ip: string
   ) {
-    return this.appService.checkTodayVisit(request, response, ip);
+    return this.appService.checkTodayVisit(req, res, ip);
   }
 
   @Get("/visit")

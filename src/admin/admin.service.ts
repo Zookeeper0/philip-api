@@ -50,9 +50,9 @@ export class AdminService {
       // 유저 토큰 생성
       const accessToken = await getTokenInfo(payload);
       return accessToken;
-    } catch (err) {
-      console.log(err);
-      Logger.error(err);
+    } catch (error) {
+      console.log(error);
+      Logger.error(error);
       throw new UnauthorizedException("유저 정보를 찾을 수 없습니다.");
     }
   }
@@ -90,8 +90,8 @@ export class AdminService {
 
       await admin.create(createAdmindto);
       await t.commit();
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Logger.error(error);
       await t.rollback();
     }
   }

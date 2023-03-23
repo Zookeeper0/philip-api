@@ -55,9 +55,9 @@ export class PostsService {
 
       await t.commit();
       return { message: "success!!" };
-    } catch (err) {
+    } catch (error) {
       await t.rollback();
-      Logger.error(err);
+      Logger.error(error);
       throw new UnauthorizedException();
     }
   }
