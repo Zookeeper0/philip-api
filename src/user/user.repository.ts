@@ -6,8 +6,8 @@ import { Sequelize } from "sequelize-typescript";
 export class UserRepository {
   constructor(private readonly sequelize: Sequelize) {}
 
+  /** 카카오아이디 유저 디비에 있는지 검증 */
   async findById(kakaoId: string) {
-    console.log("access_token", kakaoId);
     return await this.sequelize.query(
       `
         SELECT

@@ -16,6 +16,7 @@ export class PostsRepository {
     private readonly util: Utils
   ) {}
 
+  /**  GET 디테일 페이지 정보 요청 */
   async getOnePost(oid: string) {
     return await this.sequelize.query(
       `
@@ -40,11 +41,15 @@ export class PostsRepository {
     );
   }
 
+  /** GET 모든 게시물 */
   async getAllPosts(req: Request) {
     try {
-      const { search, category } = req.query;
+      const { city, search, category } = req.query;
       if (category === ALL_OID) {
-        const whereArr = [["AND p.title LIKE :search", search]];
+        const whereArr = [
+          ["AND p.title LIKE :search", search],
+          ["AND p.city_oid LIKE :city", city],
+        ];
         //카테고리가 전체(디폴트값)이고 제목에 검색어가 포함됐나?
         return await this.sequelize.query(
           `
@@ -71,6 +76,7 @@ export class PostsRepository {
         const whereArr = [
           ["AND p.title LIKE :search", search],
           ["AND p.category_oid LIKE :category", category],
+          ["AND p.city_oid LIKE :city", city],
         ];
         return await this.sequelize.query(
           `
@@ -94,16 +100,18 @@ export class PostsRepository {
           }
         );
       }
-    } catch (err) {
-      Logger.error(err);
-      throw new InternalServerErrorException(err);
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 
+  /** GET 모든 프로모션 게시물  */
   async getPromotionPosts(req: Request) {
-    const { category } = req.query;
+    const { category, city } = req.query;
     try {
       if (category === ALL_OID) {
+        const whereArr = [["AND p.city_oid LIKE :city", city]];
         return await this.sequelize.query(
           `
           SELECT
@@ -118,13 +126,22 @@ export class PostsRepository {
             INNER JOIN category AS c
                 ON p.category_oid = c.oid
             WHERE p.promotion = true
+            ${this.util.likeGenerator(whereArr, req.query)}
+            ORDER BY -- 임시 더미 데이터 
+                CASE
+                  WHEN p.title = 'R&J풀빌라' then 0  
+                END
         `,
           {
             type: sequelize.QueryTypes.SELECT,
+            replacements: req.query,
           }
         );
       } else {
-        const whereArr = [["AND p.category_oid LIKE :category", category]];
+        const whereArr = [
+          ["AND p.category_oid LIKE :category", category],
+          ["AND p.city_oid LIKE :city", city],
+        ];
         return await this.sequelize.query(
           `
           SELECT
@@ -147,9 +164,9 @@ export class PostsRepository {
           }
         );
       }
-    } catch (err) {
-      Logger.error(err);
-      throw new InternalServerErrorException(err);
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }

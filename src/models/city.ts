@@ -6,6 +6,8 @@ export interface cityAttributes {
     oid: string;
     name?: string;
     createAt?: Date;
+    disabled?: boolean;
+    nameEng?: string;
 }
 
 @Table({
@@ -38,5 +40,18 @@ export class city extends Model<cityAttributes, cityAttributes> implements cityA
     	defaultValue: Sequelize.literal("now()") 
     })
     	createAt?: Date;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.BOOLEAN 
+    })
+    	disabled?: boolean;
+
+    @Column({
+    	field: "name_eng",
+    	allowNull: true,
+    	type: DataType.STRING(50) 
+    })
+    	nameEng?: string;
 
 }

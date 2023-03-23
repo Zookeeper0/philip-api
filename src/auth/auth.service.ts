@@ -17,8 +17,8 @@ export class AuthService {
       });
       await t.commit();
       return findId;
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Logger.error(error);
       await t.rollback();
     }
   }
@@ -26,7 +26,6 @@ export class AuthService {
   async kakaoValidate(payload) {
     const t = await this.seqeulize.transaction();
     try {
-      console.log("type:", typeof payload.kakaoId);
       const findId = await kakaoUser.findOne({
         where: {
           kakaoId: payload.kakaoId.toString(),
@@ -34,8 +33,8 @@ export class AuthService {
       });
       await t.commit();
       return findId;
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Logger.error(error);
       await t.rollback();
     }
   }
