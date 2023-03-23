@@ -6,10 +6,7 @@ import { AuthService } from "../auth.service";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, "jwt-kakao") {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly adminService: AdminService
-  ) {
+  constructor(private readonly authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: true,

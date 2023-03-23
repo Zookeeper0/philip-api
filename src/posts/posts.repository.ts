@@ -127,6 +127,10 @@ export class PostsRepository {
                 ON p.category_oid = c.oid
             WHERE p.promotion = true
             ${this.util.likeGenerator(whereArr, req.query)}
+            ORDER BY -- 임시 더미 데이터 
+                CASE
+                  WHEN p.title = 'R&J풀빌라' then 0  
+                END
         `,
           {
             type: sequelize.QueryTypes.SELECT,

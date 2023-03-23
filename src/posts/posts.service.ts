@@ -60,25 +60,6 @@ export class PostsService {
     }
   }
 
-  /** 카테고리 선택에 따른 메인 메뉴리스트  */
-  async getCategoryPosts(oid: string) {
-    const t = await this.seqeulize.transaction();
-    try {
-      /** data */
-      const postsData = await post.findAll({
-        where: {
-          categoryOid: oid,
-        },
-      });
-      await t.commit();
-      return postsData;
-    } catch (error) {
-      await t.rollback();
-      Logger.error(error);
-      throw new InternalServerErrorException(error);
-    }
-  }
-
   /** 디테일 페이지 들어갈때 방문자수 카운트 */
   async countViews(countOid: string) {
     const t = await this.seqeulize.transaction();
