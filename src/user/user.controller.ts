@@ -14,14 +14,6 @@ export class UserController {
   @Post("/kakao")
   async login(@Body() code: string, @Res() res: Response) {
     const accessToken = await this.userService.kakaoLogin(code);
-
-    res.setHeader("Authorization", "Bearer " + accessToken);
-    res.cookie("jwt", accessToken, {
-      httpOnly: true,
-      //하루
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-
     return res.send(accessToken);
   }
 }

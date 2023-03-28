@@ -22,14 +22,6 @@ export class AdminController {
   @Post("/signin")
   async signIn(@Body() signInAdminDto: SignInAdminDto, @Res() res: Response) {
     const accessToken = await this.adminService.signInAdmin(signInAdminDto);
-
-    res.setHeader("Authorization", "Bearer " + accessToken);
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      //하루
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-
     return res.send(accessToken);
   }
 }

@@ -35,6 +35,15 @@ export class AdminService {
         },
       });
 
+      console.log("signinData", signinData);
+
+      if (signinData === null) {
+        console.log("NotFoundException");
+        throw new NotFoundException("존재하지 않는 사용자입니다.");
+      }
+
+      console.log("signinData", signinData);
+
       // 이메일 존재시 비밀번호 비교.
       if (
         signinData.password.toString() !==
@@ -49,8 +58,9 @@ export class AdminService {
       const accessToken = await getTokenInfo(payload);
       return accessToken;
     } catch (error) {
+      console.log(" ### ", error);
       Logger.error(error);
-      throw new UnauthorizedException("유저 정보를 찾을 수 없습니다.");
+      throw new UnauthorizedException(error);
     }
   }
 
