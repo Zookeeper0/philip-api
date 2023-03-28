@@ -10,7 +10,6 @@ import { files } from "src/models";
 import { Utils } from "src/util/common.utils";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { v1 as uuid } from "uuid";
-import { verifyToken } from "src/common/jwt.strategy";
 
 @Injectable()
 export class PostsService {
@@ -20,15 +19,18 @@ export class PostsService {
   ) {}
 
   // dto : oid?, title, adress, phoneNumber
-  async addPost(data: CreatePostDto, filesData: Array<Express.Multer.File>) {
+  async addPost(
+    data: CreatePostDto,
+    filesData: Array<Express.Multer.File>,
+    user: any
+  ) {
     const t = await this.seqeulize.transaction();
     try {
       const filesResult = [];
       const postOid = uuid();
 
-      const myInfo: any = await verifyToken(data.token);
       data.oid = postOid;
-      data.adminOid = myInfo.oid;
+      data.adminOid = user.oid;
 
       await post.create(data, { transaction: t });
       // /** oid 생성 */
@@ -57,6 +59,19 @@ export class PostsService {
       await t.rollback();
       Logger.error(error);
       throw new UnauthorizedException();
+    }
+  }
+
+  async deletePost(oid: string) {
+    const t = await this.seqeulize.transaction();
+    try {
+      /** data */
+      await post.destroy({ where: { oid: oid } });
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 

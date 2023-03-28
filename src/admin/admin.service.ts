@@ -49,7 +49,6 @@ export class AdminService {
       const accessToken = await getTokenInfo(payload);
       return accessToken;
     } catch (error) {
-      console.log(error);
       Logger.error(error);
       throw new UnauthorizedException("유저 정보를 찾을 수 없습니다.");
     }

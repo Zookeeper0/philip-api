@@ -7,18 +7,18 @@ import { AdminService } from "src/admin/admin.service";
 import { admin, kakaoUser } from "src/models";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { JwtStrategy } from "./strategies/user.jwt.strategy";
+import { JwtStrategy } from "./strategies/admin.jwt.strategy";
+import { KakaoJwtStrategy } from "./strategies/kakao.jwt.strategy";
 
 @Module({
-  imports: [
-    PassportModule,
-    SequelizeModule.forFeature([admin, kakaoUser]),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: "300s" },
-    }),
-  ],
+  imports: [PassportModule, SequelizeModule.forFeature([admin, kakaoUser])],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, AdminService, AdminRepository],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    KakaoJwtStrategy,
+    AdminService,
+    AdminRepository,
+  ],
 })
 export class AuthModule {}
