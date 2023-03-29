@@ -20,7 +20,8 @@ export class admin extends Model<adminAttributes, adminAttributes> implements ad
 
     @Column({
     	primaryKey: true,
-    	type: DataType.STRING(100) 
+    	type: DataType.STRING(100),
+    	comment: "관리자oid" 
     })
     @Index({
     	name: "admin_pkey",
@@ -32,25 +33,29 @@ export class admin extends Model<adminAttributes, adminAttributes> implements ad
     @Column({
     	field: "admin_id",
     	allowNull: true,
-    	type: DataType.STRING(50) 
+    	type: DataType.STRING(50),
+    	comment: "아이디" 
     })
     	adminId?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.BLOB 
+    	type: DataType.BLOB,
+    	comment: "비밀번호" 
     })
     	password?: Uint8Array;
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING(50) 
+    	type: DataType.STRING(50),
+    	comment: "이름" 
     })
     	name?: string;
 
     @Column({
     	allowNull: true,
-    	type: DataType.STRING 
+    	type: DataType.STRING,
+    	comment: "생년월일" 
     })
     	birth?: string;
 

@@ -7,10 +7,10 @@ export interface filesAttributes {
     postOid?: string;
     sortNo?: number;
     path?: string;
-    fileName?: string;
+    filename?: string;
     fileExtension?: string;
     size?: number;
-    originalName?: string;
+    originalname?: string;
     mimetype?: string;
     doneYn?: number;
     createdAt?: Date;
@@ -54,11 +54,10 @@ export class files extends Model<filesAttributes, filesAttributes> implements fi
     	path?: string;
 
     @Column({
-    	field: "file_name",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
-    	fileName?: string;
+    	filename?: string;
 
     @Column({
     	field: "file_extension",
@@ -74,11 +73,10 @@ export class files extends Model<filesAttributes, filesAttributes> implements fi
     	size?: number;
 
     @Column({
-    	field: "original_name",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
-    	originalName?: string;
+    	originalname?: string;
 
     @Column({
     	allowNull: true,

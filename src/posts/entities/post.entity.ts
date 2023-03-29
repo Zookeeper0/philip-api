@@ -11,7 +11,7 @@ import {
 export interface postAttributes {
   oid: string;
   adminId?: string;
-  title?: string;
+  storeName?: string;
   categoryId?: string;
   address?: string;
   phoneNumber?: string;
@@ -51,7 +51,7 @@ export class post
     allowNull: true,
     type: DataType.STRING,
   })
-  title?: string;
+  storeName?: string;
 
   @Column({
     allowNull: true,

@@ -6,7 +6,7 @@ export interface postAttributes {
     oid: string;
     adminOid?: string;
     categoryOid?: string;
-    title?: string;
+    storeName?: string;
     address?: string;
     phoneNumber?: string;
     contents?: string;
@@ -15,6 +15,7 @@ export interface postAttributes {
     updatedAt?: Date;
     cityOid?: string;
     promotion?: boolean;
+    ownerName?: string;
 }
 
 @Table({
@@ -49,10 +50,11 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     	categoryOid?: string;
 
     @Column({
+    	field: "store_name",
     	allowNull: true,
     	type: DataType.STRING(100) 
     })
-    	title?: string;
+    	storeName?: string;
 
     @Column({
     	allowNull: true,
@@ -106,5 +108,12 @@ export class post extends Model<postAttributes, postAttributes> implements postA
     	type: DataType.BOOLEAN 
     })
     	promotion?: boolean;
+
+    @Column({
+    	field: "owner_name",
+    	allowNull: true,
+    	type: DataType.STRING(50) 
+    })
+    	ownerName?: string;
 
 }

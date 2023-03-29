@@ -2,8 +2,6 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { Sequelize } from "sequelize-typescript";
 import sequelize from "sequelize";
 import { Logger } from "@nestjs/common/services";
-import { post } from "src/models";
-import { Op } from "sequelize";
 import { Utils } from "src/util/common.utils";
 import { Request } from "express";
 
@@ -23,7 +21,7 @@ export class PostsRepository {
         SELECT 
           p.oid, 
           p.admin_oid, 
-          p.title, 
+          p.store_name, 
           p.address,
           p.phone_number,
           p.contents,
@@ -47,7 +45,7 @@ export class PostsRepository {
       const { city, search, category } = req.query;
       if (category === ALL_OID) {
         const whereArr = [
-          ["AND p.title LIKE :search", search],
+          ["AND p.store_name LIKE :search", search],
           ["AND p.city_oid LIKE :city", city],
         ];
         //카테고리가 전체(디폴트값)이고 제목에 검색어가 포함됐나?
@@ -57,7 +55,7 @@ export class PostsRepository {
             p.oid,
             p.category_oid,
             p.admin_oid, 
-            p.title, 
+            p.store_name, 
             p.views,
             c.name AS category
           FROM
@@ -74,7 +72,7 @@ export class PostsRepository {
         );
       } else {
         const whereArr = [
-          ["AND p.title LIKE :search", search],
+          ["AND p.store_name LIKE :search", search],
           ["AND p.category_oid LIKE :category", category],
           ["AND p.city_oid LIKE :city", city],
         ];
@@ -84,7 +82,7 @@ export class PostsRepository {
             p.oid,
             p.category_oid,
             p.admin_oid,
-            p.title,
+            p.store_name,
             p.views,
             c.name AS category
           FROM
@@ -118,7 +116,7 @@ export class PostsRepository {
             p.oid,
             p.category_oid,
             p.admin_oid,
-            p.title,
+            p.store_name,
             p.views,
             c.name AS category
           FROM
@@ -129,7 +127,7 @@ export class PostsRepository {
             ${this.util.likeGenerator(whereArr, req.query)}
             ORDER BY -- 임시 더미 데이터 
                 CASE
-                  WHEN p.title = 'R&J풀빌라' then 0  
+                  WHEN p.store_name = 'R&J풀빌라' then 0  
                 END
         `,
           {
@@ -148,7 +146,7 @@ export class PostsRepository {
             p.oid,
             p.category_oid,
             p.admin_oid,
-            p.title,
+            p.store_name,
             p.views,
             c.name AS category
           FROM
@@ -168,5 +166,37 @@ export class PostsRepository {
       Logger.error(error);
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async getAdminStorePosts(req: Request) {
+    const { search } = req.query;
+    const whereArr = [["AND p.store_name LIKE :search", search]];
+    return await this.sequelize.query(
+      `
+        SELECT 
+          p.oid, 
+          p.admin_oid,
+          p.store_name, 
+          p.address,
+          p.phone_number,
+          p.contents,
+          p.views,
+          p.created_at,
+          p.owner_name,
+          c.name AS category,
+          t.name AS city
+            FROM post AS p 
+          LEFT JOIN category AS c
+            ON p.category_oid = c.oid
+          LEFT JOIN city AS t
+            ON p.city_oid = t.oid
+          WHERE TRUE
+          ${this.util.likeGenerator(whereArr, req.query)}
+        `,
+      {
+        type: sequelize.QueryTypes.SELECT,
+        replacements: req.query,
+      }
+    );
   }
 }

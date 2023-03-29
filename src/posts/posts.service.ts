@@ -10,7 +10,7 @@ import { files } from "src/models";
 import { Utils } from "src/util/common.utils";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { v1 as uuid } from "uuid";
-
+import { existsSync, unlinkSync } from "fs";
 @Injectable()
 export class PostsService {
   constructor(
@@ -18,12 +18,8 @@ export class PostsService {
     private readonly util: Utils
   ) {}
 
-  // dto : oid?, title, adress, phoneNumber
-  async addPost(
-    data: CreatePostDto,
-    filesData: Array<Express.Multer.File>,
-    user: any
-  ) {
+  // dto : oid?, storeName, adress, phoneNumber
+  async addPost(data: CreatePostDto, filesData: any, user: any) {
     const t = await this.seqeulize.transaction();
     try {
       const filesResult = [];
@@ -86,6 +82,19 @@ export class PostsService {
       await t.rollback();
       Logger.error(error);
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  /** 이미지 등록 preview 이미지 삭제  */
+  async deleteImages(fileName: string) {
+    if (existsSync("uploads/" + fileName)) {
+      // 파일이 존재한다면 true 그렇지 않은 경우 false 반환
+      try {
+        unlinkSync("uploads/" + fileName);
+        console.log("image delete");
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 }
