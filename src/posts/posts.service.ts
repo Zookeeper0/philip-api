@@ -91,7 +91,6 @@ export class PostsService {
       // 파일이 존재한다면 true 그렇지 않은 경우 false 반환
       try {
         unlinkSync("uploads/" + fileName);
-        console.log("image delete");
       } catch (error) {
         console.log(error);
       }

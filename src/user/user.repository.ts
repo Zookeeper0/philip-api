@@ -21,4 +21,18 @@ export class UserRepository {
       }
     );
   }
+
+  async getKakaoUsers() {
+    return await this.sequelize.query(
+      `
+        SELECT
+          k.kakao_id
+        FROM
+          kakao_user AS k
+      `,
+      {
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+  }
 }

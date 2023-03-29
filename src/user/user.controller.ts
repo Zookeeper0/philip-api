@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Logger, Query, Res } from "@nestjs/common";
+import { Controller, Post, Body, Get, Query, Res } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserRepository } from "./user.repository";
 import { Response, Request } from "express";
@@ -15,5 +15,10 @@ export class UserController {
   async login(@Body() code: string, @Res() res: Response) {
     const accessToken = await this.userService.kakaoLogin(code);
     return res.send(accessToken);
+  }
+
+  @Get("/kakao")
+  getKakaoUsers() {
+    return this.userRepository.getKakaoUsers();
   }
 }

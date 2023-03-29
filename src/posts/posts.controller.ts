@@ -88,7 +88,6 @@ export class PostsController {
   /** 미리보기 이미지 삭제 */
   @Delete("/images/:file")
   deleteImages(@Param("file") fileName: string) {
-    console.log(fileName);
     return this.postsService.deleteImages(fileName);
   }
 }

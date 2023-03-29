@@ -36,7 +36,6 @@ export class AdminService {
       });
 
       if (signinData === null) {
-        console.log("NotFoundException");
         throw new NotFoundException("존재하지 않는 사용자입니다.");
       }
 
@@ -54,7 +53,6 @@ export class AdminService {
       const accessToken = await getTokenInfo(payload);
       return accessToken;
     } catch (error) {
-      console.log(" ### ", error);
       Logger.error(error);
       throw new UnauthorizedException(error);
     }

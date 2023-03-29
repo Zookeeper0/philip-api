@@ -1,9 +1,9 @@
-import { Controller, Post, Body, Res } from "@nestjs/common";
+import { Controller, Post, Body, Res, Get, Req } from "@nestjs/common";
 import { AdminRepository } from "./admin.repository";
 import { AdminService } from "./admin.service";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
-import { Response } from "express";
+import { Request, Response } from "express";
 
 @Controller("admin")
 export class AdminController {
@@ -23,5 +23,11 @@ export class AdminController {
   async signIn(@Body() signInAdminDto: SignInAdminDto, @Res() res: Response) {
     const accessToken = await this.adminService.signInAdmin(signInAdminDto);
     return res.send(accessToken);
+  }
+
+  /** 관리자 페이지 관리자 설정, 관리자 리스트 */
+  @Get("/list")
+  getAdminList(@Req() req: Request) {
+    return this.adminRepository.getAdminList(req);
   }
 }

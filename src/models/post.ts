@@ -16,6 +16,7 @@ export interface postAttributes {
     cityOid?: string;
     promotion?: boolean;
     ownerName?: string;
+    remark?: string;
 }
 
 @Table({
@@ -105,15 +106,24 @@ export class post extends Model<postAttributes, postAttributes> implements postA
 
     @Column({
     	allowNull: true,
-    	type: DataType.BOOLEAN 
+    	type: DataType.BOOLEAN,
+    	comment: "프로모션" 
     })
     	promotion?: boolean;
 
     @Column({
     	field: "owner_name",
     	allowNull: true,
-    	type: DataType.STRING(50) 
+    	type: DataType.STRING(50),
+    	comment: "대표자명" 
     })
     	ownerName?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(100),
+    	comment: "비고" 
+    })
+    	remark?: string;
 
 }

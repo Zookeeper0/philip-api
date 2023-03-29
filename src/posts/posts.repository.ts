@@ -168,6 +168,7 @@ export class PostsRepository {
     }
   }
 
+  /** 업체관리 페이지 업체리스트 가져오기 */
   async getAdminStorePosts(req: Request) {
     const { search } = req.query;
     const whereArr = [["AND p.store_name LIKE :search", search]];
