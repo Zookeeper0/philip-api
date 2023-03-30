@@ -13,7 +13,6 @@ export class AdminRepository {
 
   async getAdminList(req: Request) {
     const { search } = req.query;
-    console.log(search);
     const whereArr = [["AND a.name LIKE :search", search]];
     return await this.sequelize.query(
       `

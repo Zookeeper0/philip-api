@@ -51,7 +51,6 @@ export class PostsController {
   }
 
   /** 게시글 등록 */
-  /** FilesInterceptor의 첫번째 속성 이름이 formData의 이미지가 담겨있는 key값과 같아야한다.*/
   @UseGuards(JwtUserAuthGuard)
   @Post("/")
   addPost(@Body() body, @Req() req: Request) {
@@ -59,7 +58,7 @@ export class PostsController {
   }
 
   @Delete("/:oid")
-  async deletePost(@Param("oid") oid: string) {
+  deletePost(@Param("oid") oid: string) {
     return this.postsService.deletePost(oid);
   }
 
@@ -70,7 +69,6 @@ export class PostsController {
     await this.postsService.countViews(oid);
     return this.postsRepository.getOnePost(oid);
   }
-
   /** 디테일 페이지 들어갈때 방문자수 카운트 */
   @Patch("/:oid")
   patchViews(@Param("oid") countOid: string) {
@@ -78,6 +76,7 @@ export class PostsController {
   }
 
   /** 이미지 미리보기 업로드 */
+  /** FilesInterceptor의 첫번째 속성 이름이 formData의 이미지가 담겨있는 key값과 같아야한다.*/
   @Post("/images")
   @UseInterceptors(FilesInterceptor("files", null, multerDiskOptions))
   @Bind(UploadedFiles())
@@ -89,5 +88,13 @@ export class PostsController {
   @Delete("/images/:file")
   deleteImages(@Param("file") fileName: string) {
     return this.postsService.deleteImages(fileName);
+  }
+
+  /**  GET 디테일 페이지 정보 요청 */
+  // @UseGuards(JwtKakaoAuthGuard)
+  @Get("/test/:oid")
+  getOnePostTest(@Param("oid") oid: string, @Req() req: Request) {
+    console.log("oid", oid);
+    return this.postsService.getOnePostTest(oid);
   }
 }

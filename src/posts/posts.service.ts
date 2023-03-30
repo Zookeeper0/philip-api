@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { Logger } from "@nestjs/common/services";
 import { Sequelize } from "sequelize-typescript";
-import { post } from "src/models";
+import { category, post } from "src/models";
 import { files } from "src/models";
 import { Utils } from "src/util/common.utils";
 import { CreatePostDto } from "./dto/create-post.dto";
@@ -94,6 +94,52 @@ export class PostsService {
       } catch (error) {
         console.log(error);
       }
+    }
+  }
+
+  async getOnePostTest(oid) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const data = await post.findOne({
+        attributes: [
+          "oid",
+          "admin_oid",
+          "store_name",
+          "address",
+          "phone_number",
+          "contents",
+          "views",
+        ],
+        where: {
+          oid: oid,
+        },
+        include: [
+          {
+            model: files,
+            as: "thumb",
+            where: { postOid: oid, label: "thumb" },
+            attributes: ["filename"],
+          },
+          {
+            model: files,
+            as: "detail",
+            where: { postOid: oid, label: "detail" },
+            attributes: ["filename"],
+          },
+          {
+            model: files,
+            as: "menu",
+            where: { postOid: oid, label: "menu" },
+            attributes: ["filename"],
+          },
+        ],
+      });
+      await t.commit();
+      return data;
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new UnauthorizedException();
     }
   }
 }

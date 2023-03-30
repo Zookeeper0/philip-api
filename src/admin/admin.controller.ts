@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Get, Req } from "@nestjs/common";
+import { Controller, Post, Body, Res, Get, Req, Delete } from "@nestjs/common";
 import { AdminRepository } from "./admin.repository";
 import { AdminService } from "./admin.service";
 import { CreateAdminDto } from "./dto/create-admin.dto";
@@ -29,5 +29,21 @@ export class AdminController {
   @Get("/list")
   getAdminList(@Req() req: Request) {
     return this.adminRepository.getAdminList(req);
+  }
+
+  /** 광고 추가 */
+  @Post("/ads")
+  addAds(@Body() body, @Req() req: Request) {
+    return this.adminService.addAds(body);
+  }
+  /** 광고 리스트 */
+  @Get("/ads")
+  getAds() {
+    return this.adminService.getAds();
+  }
+
+  @Delete("/ads")
+  deleteAllAds() {
+    return this.adminService.deleteAllAds();
   }
 }

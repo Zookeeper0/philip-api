@@ -12,10 +12,11 @@ import { Logger } from "@nestjs/common/services";
 import { Sequelize } from "sequelize-typescript";
 import { Utils } from "src/util/common.utils";
 import * as crypto from "crypto";
-import { admin } from "src/models";
+import { admin, files } from "src/models";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
 import { createAccessToken, getTokenInfo } from "src/common/jwt.fn";
 import { AdminRepository } from "./admin.repository";
+import { InternalServerErrorException } from "@nestjs/common/exceptions";
 
 @Injectable()
 export class AdminService {
@@ -93,6 +94,66 @@ export class AdminService {
     } catch (error) {
       Logger.error(error);
       await t.rollback();
+    }
+  }
+
+  async addAds(filesData) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const filesResult = [];
+
+      if (filesData) {
+        filesData.forEach((file) => {
+          const oid = uuid();
+          const res = {
+            oid: oid,
+            postOid: "ads",
+            ...file,
+          };
+
+          filesResult.push(res);
+        });
+
+        await Promise.all(
+          filesResult.map((file) => files.create(file, { transaction: t }))
+        );
+      }
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      Logger.log(error);
+      throw new UnauthorizedException();
+    }
+  }
+
+  async getAds() {
+    const t = await this.seqeulize.transaction();
+    try {
+      const ads = await files.findAll({
+        attributes: ["label", "filename", "oid"],
+        where: {
+          postOid: "ads",
+        },
+      });
+      await t.commit();
+      return ads;
+    } catch (error) {
+      Logger.log(error);
+      await t.rollback();
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async deleteAllAds() {
+    const t = await this.seqeulize.transaction();
+    try {
+      /** data */
+      await files.destroy({ where: { postOid: "ads" } });
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }
