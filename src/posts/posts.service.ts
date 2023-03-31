@@ -86,7 +86,7 @@ export class PostsService {
   }
 
   /** 이미지 등록 preview 이미지 삭제  */
-  async deleteImages(fileName: string) {
+  async deletePreviewImages(fileName: string) {
     if (existsSync("uploads/" + fileName)) {
       // 파일이 존재한다면 true 그렇지 않은 경우 false 반환
       try {
@@ -97,19 +97,76 @@ export class PostsService {
     }
   }
 
-  async getOnePostTest(oid) {
+  /** 업체 수정시 이미지 삭제 */
+  async deleteImage(oid: string) {
+    Logger.log(oid);
+    const t = await this.seqeulize.transaction();
+    try {
+      await files.destroy({ where: { oid: oid } });
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new UnauthorizedException();
+    }
+  }
+
+  async getOnePost(oid) {
     const t = await this.seqeulize.transaction();
     try {
       const data = await post.findOne({
         attributes: [
-          "oid",
-          "admin_oid",
-          "store_name",
+          "cityOid",
+          "categoryOid",
+          "storeName",
+          "ownerName",
           "address",
-          "phone_number",
+          "phoneNumber",
           "contents",
+          "remark",
           "views",
         ],
+        where: {
+          oid: oid,
+        },
+        include: [
+          {
+            model: files,
+            as: "thumb",
+            where: { postOid: oid, label: "thumb" },
+            attributes: ["filename", "oid"],
+          },
+          {
+            model: files,
+            as: "detail",
+            where: { postOid: oid, label: "detail" },
+            attributes: ["filename", "oid"],
+          },
+          {
+            model: files,
+            as: "menu",
+            where: { postOid: oid, label: "menu" },
+            attributes: ["filename", "oid"],
+          },
+          {
+            model: category,
+            attributes: ["name"],
+          },
+        ],
+      });
+      await t.commit();
+      return data;
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new UnauthorizedException();
+    }
+  }
+
+  async editPostInfo(oid) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const data = await post.findOne({
         where: {
           oid: oid,
         },

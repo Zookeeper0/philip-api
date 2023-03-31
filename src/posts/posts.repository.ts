@@ -4,6 +4,9 @@ import sequelize from "sequelize";
 import { Logger } from "@nestjs/common/services";
 import { Utils } from "src/util/common.utils";
 import { Request } from "express";
+import { category, files, post } from "src/models";
+import { UnauthorizedException } from "@nestjs/common/exceptions";
+import { Op } from "sequelize";
 
 const ALL_OID = "fb673f00-c152-11ed-8fb3-59762efda8c3";
 
@@ -43,6 +46,7 @@ export class PostsRepository {
   async getAllPosts(req: Request) {
     try {
       const { city, search, category } = req.query;
+      console.log("city, search, category", city, search, category);
       if (category === ALL_OID) {
         const whereArr = [
           ["AND p.store_name LIKE :search", search],
@@ -51,17 +55,21 @@ export class PostsRepository {
         //카테고리가 전체(디폴트값)이고 제목에 검색어가 포함됐나?
         return await this.sequelize.query(
           `
-          SELECT 
+           SELECT
             p.oid,
             p.category_oid,
-            p.admin_oid, 
-            p.store_name, 
+            p.admin_oid,
+            p.store_name,
             p.views,
-            c.name AS category
+            c.name AS category,
+            f.filename AS thumb
           FROM
-            post AS p 
-            INNER JOIN category AS c 
-                ON p.category_oid = c.oid 
+            post AS p
+            INNER JOIN category AS c
+                ON p.category_oid = c.oid
+            INNER JOIN files AS f
+                ON p.oid = f.post_oid
+                AND f.label = 'thumb'
             WHERE TRUE
             ${this.util.likeGenerator(whereArr, req.query)}
         `,
@@ -84,11 +92,15 @@ export class PostsRepository {
             p.admin_oid,
             p.store_name,
             p.views,
-            c.name AS category
+            c.name AS category,
+            f.filename AS thumb
           FROM
             post AS p
             INNER JOIN category AS c
                 ON p.category_oid = c.oid
+            INNER JOIN files AS f
+                ON p.oid = f.post_oid
+                AND f.label = 'thumb'
             WHERE TRUE
             ${this.util.likeGenerator(whereArr, req.query)}
         `,
@@ -106,7 +118,8 @@ export class PostsRepository {
 
   /** GET 모든 프로모션 게시물  */
   async getPromotionPosts(req: Request) {
-    const { category, city } = req.query;
+    console.log("req.query", req.query);
+    const { city, category } = req.query;
     try {
       if (category === ALL_OID) {
         const whereArr = [["AND p.city_oid LIKE :city", city]];
@@ -118,11 +131,15 @@ export class PostsRepository {
             p.admin_oid,
             p.store_name,
             p.views,
-            c.name AS category
+            c.name AS category,
+            f.filename AS thumb
           FROM
             post AS p
             INNER JOIN category AS c
                 ON p.category_oid = c.oid
+            INNER JOIN files AS f
+                ON p.oid = f.post_oid
+                AND f.label = 'thumb'
             WHERE p.promotion = true
             ${this.util.likeGenerator(whereArr, req.query)}
             ORDER BY -- 임시 더미 데이터 
@@ -143,16 +160,20 @@ export class PostsRepository {
         return await this.sequelize.query(
           `
           SELECT
-            p.oid,
-            p.category_oid,
-            p.admin_oid,
-            p.store_name,
-            p.views,
-            c.name AS category
+              p.oid,
+              p.category_oid,
+              p.admin_oid,
+              p.store_name,
+              p.views,
+              c.name AS category,
+              f.filename AS thumb
           FROM
             post AS p
             INNER JOIN category AS c
                 ON p.category_oid = c.oid
+            INNER JOIN files AS f
+                ON p.oid = f.post_oid
+                AND f.label = 'thumb'
             WHERE p.promotion = true
             ${this.util.likeGenerator(whereArr, req.query)}
         `,
@@ -184,6 +205,7 @@ export class PostsRepository {
           p.views,
           p.created_at,
           p.owner_name,
+          p.promotion,
           c.name AS category,
           t.name AS city
             FROM post AS p 

@@ -65,10 +65,11 @@ export class PostsController {
   /**  GET 디테일 페이지 정보 요청 */
   // @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
-  async getOnePost(@Param("oid") oid: string, @Req() req: Request) {
+  async getOnePostTest(@Param("oid") oid: string) {
     await this.postsService.countViews(oid);
-    return this.postsRepository.getOnePost(oid);
+    return this.postsService.getOnePost(oid);
   }
+
   /** 디테일 페이지 들어갈때 방문자수 카운트 */
   @Patch("/:oid")
   patchViews(@Param("oid") countOid: string) {
@@ -85,16 +86,19 @@ export class PostsController {
   }
 
   /** 미리보기 이미지 삭제 */
-  @Delete("/images/:file")
-  deleteImages(@Param("file") fileName: string) {
-    return this.postsService.deleteImages(fileName);
+  @Delete("/images/preview/:file")
+  deletePreviewImages(@Param("file") fileName: string) {
+    return this.postsService.deletePreviewImages(fileName);
   }
 
-  /**  GET 디테일 페이지 정보 요청 */
-  // @UseGuards(JwtKakaoAuthGuard)
-  @Get("/test/:oid")
-  getOnePostTest(@Param("oid") oid: string, @Req() req: Request) {
-    console.log("oid", oid);
-    return this.postsService.getOnePostTest(oid);
+  /** 업체 수정시 이미지 삭제 */
+  @Delete("images/:file")
+  deleteImage(@Param("file") oid: string) {
+    return this.postsService.deleteImage(oid);
+  }
+
+  @Get("/edit/:oid")
+  editPostInfo(@Param("oid") oid: string) {
+    return this.postsService.editPostInfo(oid);
   }
 }
