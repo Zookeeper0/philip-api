@@ -85,6 +85,54 @@ export class PostsService {
     }
   }
 
+  /** 업체관리 데이터 수정, 이미지 수정  */
+  async editPost(data: any) {
+    const t = await this.seqeulize.transaction();
+    try {
+      const filesResult = [];
+      await post.update(
+        {
+          cityOid: data.content.cityOid,
+          categoryOid: data.content.categoryOid,
+          storeName: data.content.storeName,
+          ownerName: data.content.ownerName,
+          address: data.content.address,
+          phoneNumber: data.content.phoneNumber,
+          contents: data.content.contents,
+          remark: data.content.remark,
+        },
+        {
+          where: { oid: data.content.oid },
+          transaction: t,
+        }
+      );
+
+      // 이미지 처리 로직
+      if (data.files) {
+        data.files.forEach((file) => {
+          const oid = uuid();
+          const res = {
+            oid: oid,
+            postOid: data.content.oid,
+            ...file,
+          };
+          filesResult.push(res);
+        });
+
+        await Promise.all(
+          filesResult.map((file) => files.create(file, { transaction: t }))
+        );
+      }
+
+      await t.commit();
+      return { message: "success!!" };
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   /** 이미지 등록 preview 이미지 삭제  */
   async deletePreviewImages(fileName: string) {
     if (existsSync("uploads/" + fileName)) {
@@ -107,7 +155,7 @@ export class PostsService {
     } catch (error) {
       await t.rollback();
       Logger.error(error);
-      throw new UnauthorizedException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -116,6 +164,7 @@ export class PostsService {
     try {
       const data = await post.findOne({
         attributes: [
+          "oid",
           "cityOid",
           "categoryOid",
           "storeName",
@@ -135,22 +184,26 @@ export class PostsService {
             as: "thumb",
             where: { postOid: oid, label: "thumb" },
             attributes: ["filename", "oid"],
+            required: false,
           },
           {
             model: files,
             as: "detail",
             where: { postOid: oid, label: "detail" },
             attributes: ["filename", "oid"],
+            required: false,
           },
           {
             model: files,
             as: "menu",
             where: { postOid: oid, label: "menu" },
             attributes: ["filename", "oid"],
+            required: false,
           },
           {
             model: category,
             attributes: ["name"],
+            required: false,
           },
         ],
       });
@@ -163,7 +216,7 @@ export class PostsService {
     }
   }
 
-  async editPostInfo(oid) {
+  async getEditPostInfo(oid) {
     const t = await this.seqeulize.transaction();
     try {
       const data = await post.findOne({

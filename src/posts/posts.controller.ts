@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Patch,
   Get,
   Body,
   Param,
@@ -9,9 +10,9 @@ import {
   Delete,
   Res,
   Req,
+  Put,
 } from "@nestjs/common";
 import {
-  Patch,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -70,6 +71,11 @@ export class PostsController {
     return this.postsService.getOnePost(oid);
   }
 
+  @Put("/store/edit")
+  editPost(@Body() body) {
+    return this.postsService.editPost(body);
+  }
+
   /** 디테일 페이지 들어갈때 방문자수 카운트 */
   @Patch("/:oid")
   patchViews(@Param("oid") countOid: string) {
@@ -97,8 +103,9 @@ export class PostsController {
     return this.postsService.deleteImage(oid);
   }
 
+  /** 업체 수정시 정보 GET */
   @Get("/edit/:oid")
-  editPostInfo(@Param("oid") oid: string) {
-    return this.postsService.editPostInfo(oid);
+  getEditPostInfo(@Param("oid") oid: string) {
+    return this.postsService.getEditPostInfo(oid);
   }
 }
