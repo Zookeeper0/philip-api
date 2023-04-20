@@ -8,7 +8,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get("/authenticate")
-  @UseGuards(JwtUserAuthGuard)
+  // @UseGuards(JwtUserAuthGuard)
   isAuthenticated(@Req() req: Request): any {
     const user = req.user;
     return user;
