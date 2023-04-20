@@ -40,6 +40,7 @@ export class PostsController {
   }
 
   /** GET admin 업체관리 페이지 dataSource */
+  @UseGuards(JwtUserAuthGuard)
   @Get("/store")
   getAdminStorePosts(@Req() req: Request) {
     return this.postsRepository.getAdminStorePosts(req);
@@ -64,13 +65,14 @@ export class PostsController {
   }
 
   /**  GET 디테일 페이지 정보 요청 */
-  // @UseGuards(JwtKakaoAuthGuard)
+  @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
   async getOnePostTest(@Param("oid") oid: string) {
     await this.postsService.countViews(oid);
     return this.postsService.getOnePost(oid);
   }
 
+  @UseGuards(JwtUserAuthGuard)
   @Put("/store/edit")
   editPost(@Body() body) {
     return this.postsService.editPost(body);
@@ -103,9 +105,15 @@ export class PostsController {
     return this.postsService.deleteImage(oid);
   }
 
-  /** 업체 수정시 정보 GET */
+  /** admin 업체 수정시 정보 GET */
+  @UseGuards(JwtUserAuthGuard)
   @Get("/edit/:oid")
   getEditPostInfo(@Param("oid") oid: string) {
     return this.postsService.getEditPostInfo(oid);
+  }
+
+  @Patch("/promotion/:oid")
+  updatePromotion(@Param("oid") oid: string) {
+    return this.postsService.updatePromotion(oid);
   }
 }

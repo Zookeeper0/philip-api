@@ -11,6 +11,7 @@ import { Utils } from "src/util/common.utils";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { v1 as uuid } from "uuid";
 import { existsSync, unlinkSync } from "fs";
+import { where } from "sequelize";
 @Injectable()
 export class PostsService {
   constructor(
@@ -139,6 +140,7 @@ export class PostsService {
       // 파일이 존재한다면 true 그렇지 않은 경우 false 반환
       try {
         unlinkSync("uploads/" + fileName);
+        return fileName;
       } catch (error) {
         console.log(error);
       }
@@ -250,6 +252,22 @@ export class PostsService {
       await t.rollback();
       Logger.error(error);
       throw new UnauthorizedException();
+    }
+  }
+
+  async updatePromotion(oid: string) {
+    const t = await this.seqeulize.transaction();
+    try {
+      /** data */
+      await post.update(
+        { promotion: Sequelize.literal("NOT promotion") },
+        { where: { oid: oid } }
+      );
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }

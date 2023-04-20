@@ -26,7 +26,11 @@ export class UserRepository {
     return await this.sequelize.query(
       `
         SELECT
-          k.kakao_id
+          k.oid,
+          k.kakao_id,
+          k.name,
+          k.phone_number,
+          k.role
         FROM
           kakao_user AS k
       `,

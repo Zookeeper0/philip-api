@@ -48,8 +48,8 @@ export class AdminService {
         throw new NotFoundException("비밀번호가 일치하지 않습니다.");
       }
 
-      const { oid } = signinData;
-      const payload = { oid, adminId };
+      const { oid, role } = signinData;
+      const payload = { oid, role, adminId };
       // 유저 토큰 생성
       const accessToken = await getTokenInfo(payload);
       return accessToken;
@@ -88,6 +88,9 @@ export class AdminService {
       // const USER_OID = await this.util.getOid(admin, "admin");
       const USER_OID = uuid();
       createAdmindto.oid = USER_OID;
+
+      // 기본 권한
+      createAdmindto.role = "ADMIN";
 
       await admin.create(createAdmindto);
       await t.commit();
@@ -150,6 +153,39 @@ export class AdminService {
       /** data */
       await files.destroy({ where: { postOid: "ads" } });
       await t.commit();
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+  async deleteOneAds(id: string) {
+    const t = await this.seqeulize.transaction();
+    try {
+      /** data */
+      await files.destroy({ where: { oid: id } });
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async changeAdminRole(data) {
+    const t = await this.seqeulize.transaction();
+    try {
+      await admin.update(
+        {
+          role: data.role,
+        },
+        {
+          where: { oid: data.oid },
+          transaction: t,
+        }
+      );
+      await t.commit();
+      return;
     } catch (error) {
       await t.rollback();
       Logger.error(error);

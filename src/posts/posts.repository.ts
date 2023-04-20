@@ -32,7 +32,7 @@ export class PostsRepository {
           c.name AS category
         FROM
           post AS p 
-          INNER JOIN category AS c 
+          LEFT JOIN category AS c 
               ON p.category_oid = c.oid 
           WHERE p.oid = '${oid}';
         `,
@@ -45,11 +45,11 @@ export class PostsRepository {
   /** GET 모든 게시물 */
   async getAllPosts(req: Request) {
     try {
-      const { city, search, category } = req.query;
+      const { city, search, category }: any = req.query;
       console.log("city, search, category", city, search, category);
       if (category === ALL_OID) {
         const whereArr = [
-          ["AND p.store_name LIKE :search", search],
+          ["AND  lower(p.store_name) LIKE :search", search.toLowerCase()],
           ["AND p.city_oid LIKE :city", city],
         ];
         //카테고리가 전체(디폴트값)이고 제목에 검색어가 포함됐나?
@@ -65,9 +65,9 @@ export class PostsRepository {
             f.filename AS thumb
           FROM
             post AS p
-            INNER JOIN category AS c
+            LEFT JOIN category AS c
                 ON p.category_oid = c.oid
-            INNER JOIN files AS f
+            LEFT JOIN files AS f
                 ON p.oid = f.post_oid
                 AND f.label = 'thumb'
             WHERE TRUE
@@ -80,7 +80,7 @@ export class PostsRepository {
         );
       } else {
         const whereArr = [
-          ["AND p.store_name LIKE :search", search],
+          ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
           ["AND p.category_oid LIKE :category", category],
           ["AND p.city_oid LIKE :city", city],
         ];
@@ -191,8 +191,11 @@ export class PostsRepository {
 
   /** 업체관리 페이지 업체리스트 가져오기 */
   async getAdminStorePosts(req: Request) {
-    const { search } = req.query;
-    const whereArr = [["AND p.store_name LIKE :search", search]];
+    const { search }: any = req.query;
+    console.log(search.toLowerCase());
+    const whereArr = [
+      ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
+    ];
     return await this.sequelize.query(
       `
         SELECT 
@@ -208,13 +211,15 @@ export class PostsRepository {
           p.promotion,
           c.name AS category,
           t.name AS city
-            FROM post AS p 
+        FROM 
+          post AS p 
           LEFT JOIN category AS c
             ON p.category_oid = c.oid
           LEFT JOIN city AS t
             ON p.city_oid = t.oid
           WHERE TRUE
           ${this.util.likeGenerator(whereArr, req.query)}
+          ORDER BY p.created_at DESC
         `,
       {
         type: sequelize.QueryTypes.SELECT,
