@@ -50,7 +50,7 @@ export class AdminService {
       }
 
       const { oid } = signinData;
-      const payload = { oid, adminId };
+      const payload = { oid, role, adminId };
 
       // 유저 토큰 생성
       const accessToken = await getTokenInfo(payload);
