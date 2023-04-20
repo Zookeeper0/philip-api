@@ -12,7 +12,7 @@ export class AuthService {
     try {
       const findId = await admin.findOne({
         where: {
-          adminId: payload.adminId,
+          oid: payload.oid,
         },
       });
       await t.commit();

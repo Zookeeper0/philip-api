@@ -6,7 +6,7 @@ export class CreatePostDto {
   adminOid?: string;
   cityOid?: string;
   categoryOid: string;
-  title: string;
+  storeName: string;
   address: string;
   token?: string;
   phoneNumber: string;

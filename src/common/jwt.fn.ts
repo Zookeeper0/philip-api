@@ -2,7 +2,7 @@ import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const ACCESS_TOKEN_EXPIRES = 60 * 5 * 1000;
+const ACCESS_TOKEN_EXPIRES = "2d";
 
 export const createAccessToken = (payload: any) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {
@@ -12,5 +12,5 @@ export const createAccessToken = (payload: any) => {
 
 export const getTokenInfo = (user: any) => {
   const accessToken = createAccessToken(user);
-  return { accessToken };
+  return { accessToken: accessToken, ...user };
 };
