@@ -28,7 +28,7 @@ export class UserController {
   }
 
   /** GET admin 페이지 회원관리 */
-  @UseGuards(JwtUserAuthGuard)
+  // @UseGuards(JwtUserAuthGuard)
   @Get("/kakao")
   getKakaoUsers() {
     return this.userRepository.getKakaoUsers();
