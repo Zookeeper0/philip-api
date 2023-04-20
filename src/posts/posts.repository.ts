@@ -96,9 +96,9 @@ export class PostsRepository {
             f.filename AS thumb
           FROM
             post AS p
-            INNER JOIN category AS c
+            LEFT JOIN category AS c
                 ON p.category_oid = c.oid
-            INNER JOIN files AS f
+            LEFT JOIN files AS f
                 ON p.oid = f.post_oid
                 AND f.label = 'thumb'
             WHERE TRUE
@@ -135,9 +135,9 @@ export class PostsRepository {
             f.filename AS thumb
           FROM
             post AS p
-            INNER JOIN category AS c
+            LEFT JOIN category AS c
                 ON p.category_oid = c.oid
-            INNER JOIN files AS f
+            LEFT JOIN files AS f
                 ON p.oid = f.post_oid
                 AND f.label = 'thumb'
             WHERE p.promotion = true
@@ -169,9 +169,9 @@ export class PostsRepository {
               f.filename AS thumb
           FROM
             post AS p
-            INNER JOIN category AS c
+            LEFT JOIN category AS c
                 ON p.category_oid = c.oid
-            INNER JOIN files AS f
+            LEFT JOIN files AS f
                 ON p.oid = f.post_oid
                 AND f.label = 'thumb'
             WHERE p.promotion = true

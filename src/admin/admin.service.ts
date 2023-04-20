@@ -49,7 +49,7 @@ export class AdminService {
         throw new NotFoundException("비밀번호가 일치하지 않습니다.");
       }
 
-      const { oid } = signinData;
+      const { oid, role } = signinData;
       const payload = { oid, role, adminId };
 
       // 유저 토큰 생성
