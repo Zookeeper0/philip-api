@@ -30,6 +30,7 @@ export class AdminService {
   async signInAdmin(signinAdmin: SignInAdminDto) {
     try {
       const { adminId, password } = signinAdmin;
+
       const signinData = await admin.findOne({
         where: {
           adminId: adminId,
@@ -48,10 +49,12 @@ export class AdminService {
         throw new NotFoundException("비밀번호가 일치하지 않습니다.");
       }
 
-      const { oid, role } = signinData;
-      const payload = { oid, role, adminId };
+      const { oid } = signinData;
+      const payload = { oid, adminId };
+
       // 유저 토큰 생성
       const accessToken = await getTokenInfo(payload);
+
       return accessToken;
     } catch (error) {
       Logger.error(error);
