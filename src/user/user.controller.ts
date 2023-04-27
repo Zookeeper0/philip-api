@@ -10,7 +10,6 @@ import {
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserRepository } from "./user.repository";
-import { Response, Request } from "express";
 import { JwtUserAuthGuard } from "src/auth/guard/admin.auth.guard";
 
 @Controller("user")
@@ -22,13 +21,12 @@ export class UserController {
 
   /** 카카오 로그인 */
   @Post("/kakao")
-  async login(@Body() code: string, @Res() res: Response) {
-    const accessToken = await this.userService.kakaoLogin(code);
-    return res.send(accessToken);
+  async login(@Body() code: string) {
+    return this.userService.kakaoLogin(code);
   }
 
   /** GET admin 페이지 회원관리 */
-  // @UseGuards(JwtUserAuthGuard)
+  @UseGuards(JwtUserAuthGuard)
   @Get("/kakao")
   getKakaoUsers() {
     return this.userRepository.getKakaoUsers();

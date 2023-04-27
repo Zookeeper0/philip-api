@@ -36,11 +36,12 @@ export class PostsController {
   /** GET 모든 게시물 */
   @Get("/")
   getAllPosts(@Req() req: Request) {
+    console.log(req);
     return this.postsRepository.getAllPosts(req);
   }
 
   /** GET admin 업체관리 페이지 dataSource */
-  // @UseGuards(JwtUserAuthGuard)
+  @UseGuards(JwtUserAuthGuard)
   @Get("/store")
   getAdminStorePosts(@Req() req: Request) {
     return this.postsRepository.getAdminStorePosts(req);
@@ -53,9 +54,10 @@ export class PostsController {
   }
 
   /** 게시글 등록 */
-  // @UseGuards(JwtUserAuthGuard)
+  @UseGuards(JwtUserAuthGuard)
   @Post("/")
   addPost(@Body() body, @Req() req: Request) {
+    console.log(req);
     return this.postsService.addPost(body.content, body.files, req.user);
   }
 
@@ -65,14 +67,15 @@ export class PostsController {
   }
 
   /**  GET 디테일 페이지 정보 요청 */
-  // @UseGuards(JwtKakaoAuthGuard)
+  @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
-  async getOnePostTest(@Param("oid") oid: string) {
+  async getOnePostTest(@Param("oid") oid: string, @Req() req: Request) {
+    console.log("!>!", req);
     await this.postsService.countViews(oid);
     return this.postsService.getOnePost(oid);
   }
 
-  // @UseGuards(JwtUserAuthGuard)
+  @UseGuards(JwtUserAuthGuard)
   @Put("/store/edit")
   editPost(@Body() body) {
     return this.postsService.editPost(body);
@@ -106,7 +109,7 @@ export class PostsController {
   }
 
   /** admin 업체 수정시 정보 GET */
-  // @UseGuards(JwtUserAuthGuard)
+  @UseGuards(JwtUserAuthGuard)
   @Get("/edit/:oid")
   getEditPostInfo(@Param("oid") oid: string) {
     return this.postsService.getEditPostInfo(oid);

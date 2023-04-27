@@ -21,7 +21,6 @@ export class UserService {
       const tokenResponse = await getTokenFromKakao(authCode);
       const userInfo = await getUserFromKakao(tokenResponse);
 
-      console.log("userInfo", userInfo);
       const {
         id: kakaoId,
         kakao_account: { name, phone_number },

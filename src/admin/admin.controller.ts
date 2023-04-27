@@ -38,7 +38,7 @@ export class AdminController {
   }
 
   /** admin 페이지 관리자 설정, 관리자 리스트 */
-  // @UseGuards(JwtUserAuthGuard)
+  @UseGuards(JwtUserAuthGuard)
   @Get("/list")
   getAdminList(@Req() req: Request) {
     return this.adminRepository.getAdminList(req);
