@@ -34,10 +34,11 @@ export class PostsRepository {
           post AS p 
           LEFT JOIN category AS c 
               ON p.category_oid = c.oid 
-          WHERE p.oid = '${oid}';
+          WHERE p.oid = $oid;
         `,
       {
         type: sequelize.QueryTypes.SELECT,
+        bind: { oid },
       }
     );
   }
@@ -46,7 +47,6 @@ export class PostsRepository {
   async getAllPosts(req: Request) {
     try {
       const { city, search, category }: any = req.query;
-      console.log("city, search, category", city, search, category);
       if (category === ALL_OID) {
         const whereArr = [
           ["AND  lower(p.store_name) LIKE :search", search.toLowerCase()],
@@ -118,7 +118,6 @@ export class PostsRepository {
 
   /** GET 모든 프로모션 게시물  */
   async getPromotionPosts(req: Request) {
-    console.log("req.query", req.query);
     const { city, category } = req.query;
     try {
       if (category === ALL_OID) {
@@ -192,7 +191,6 @@ export class PostsRepository {
   /** 업체관리 페이지 업체리스트 가져오기 */
   async getAdminStorePosts(req: Request) {
     const { search }: any = req.query;
-    console.log(search.toLowerCase());
     const whereArr = [
       ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
     ];

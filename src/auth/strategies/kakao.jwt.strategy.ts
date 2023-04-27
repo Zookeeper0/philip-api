@@ -14,8 +14,7 @@ export class KakaoJwtStrategy extends PassportStrategy(Strategy, "jwt-kakao") {
   }
 
   async validate(payload, done): Promise<any> {
-    console.log("payload!!", payload);
-
+    console.log("!!", payload);
     let admin = null;
     let user = null;
     if (payload.adminId) {

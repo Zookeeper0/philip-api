@@ -45,7 +45,6 @@ export const multerDiskOptions = {
       callback(null, uploadPath);
     },
     filename: (request, file, callback) => {
-      console.log("file", file);
       //파일 이름 설정
       file.originalname = Buffer.from(file.originalname, "latin1").toString(
         "utf-8"

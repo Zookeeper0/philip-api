@@ -27,7 +27,6 @@ export async function getUserFromKakao({ access_token }) {
       Authorization: `Bearer ${access_token}`,
     },
   };
-  console.log("getUserFromKakao");
   const response = await axios.get(userInfoUrl, config).then((res) => res.data);
   return response;
 }
