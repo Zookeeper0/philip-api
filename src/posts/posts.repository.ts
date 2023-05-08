@@ -141,10 +141,8 @@ export class PostsRepository {
                 AND f.label = 'thumb'
             WHERE p.promotion = true
             ${this.util.likeGenerator(whereArr, req.query)}
-            ORDER BY -- 임시 더미 데이터 
-                CASE
-                  WHEN p.store_name = 'R&J풀빌라' then 0  
-                END
+            ORDER BY
+                p.order ASC;
         `,
           {
             type: sequelize.QueryTypes.SELECT,
@@ -175,6 +173,8 @@ export class PostsRepository {
                 AND f.label = 'thumb'
             WHERE p.promotion = true
             ${this.util.likeGenerator(whereArr, req.query)}
+            ORDER BY
+                p.order ASC;
         `,
           {
             type: sequelize.QueryTypes.SELECT,
@@ -190,39 +190,84 @@ export class PostsRepository {
 
   /** 업체관리 페이지 업체리스트 가져오기 */
   async getAdminStorePosts(req: Request) {
-    const { search }: any = req.query;
-    const whereArr = [
-      ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
-    ];
-    return await this.sequelize.query(
-      `
-        SELECT 
-          p.oid, 
-          p.admin_oid,
-          p.store_name, 
-          p.address,
-          p.phone_number,
-          p.contents,
-          p.views,
-          p.created_at,
-          p.owner_name,
-          p.promotion,
-          c.name AS category,
-          t.name AS city
-        FROM 
-          post AS p 
-          LEFT JOIN category AS c
-            ON p.category_oid = c.oid
-          LEFT JOIN city AS t
-            ON p.city_oid = t.oid
-          WHERE TRUE
-          ${this.util.likeGenerator(whereArr, req.query)}
-          ORDER BY p.created_at DESC
+    try {
+      const { search, category }: any = req.query;
+      if (category === ALL_OID) {
+        const whereArr = [
+          ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
+        ];
+
+        return await this.sequelize.query(
+          `
+            SELECT 
+              p.oid, 
+              p.admin_oid,
+              p.store_name, 
+              p.address,
+              p.phone_number,
+              p.contents,
+              p.views,
+              p.created_at,
+              p.owner_name,
+              p.promotion,
+              p.order,
+              c.name AS category,
+              t.name AS city
+            FROM 
+              post AS p 
+              LEFT JOIN category AS c
+                ON p.category_oid = c.oid
+              LEFT JOIN city AS t
+                ON p.city_oid = t.oid
+              WHERE TRUE
+              ${this.util.likeGenerator(whereArr, req.query)}
+              ORDER BY p.created_at DESC
+          `,
+          {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: req.query,
+          }
+        );
+      } else {
+        const whereArr = [
+          ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
+          ["AND p.category_oid LIKE :category", category],
+        ];
+        return await this.sequelize.query(
+          `
+           SELECT 
+              p.oid, 
+              p.admin_oid,
+              p.store_name, 
+              p.address,
+              p.phone_number,
+              p.contents,
+              p.views,
+              p.created_at,
+              p.owner_name,
+              p.promotion,
+              p.order,
+              c.name AS category,
+              t.name AS city
+            FROM 
+              post AS p 
+              LEFT JOIN category AS c
+                ON p.category_oid = c.oid
+              LEFT JOIN city AS t
+                ON p.city_oid = t.oid
+              WHERE TRUE
+              ${this.util.likeGenerator(whereArr, req.query)}
+              ORDER BY p.created_at DESC
         `,
-      {
-        type: sequelize.QueryTypes.SELECT,
-        replacements: req.query,
+          {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: req.query,
+          }
+        );
       }
-    );
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
   }
 }

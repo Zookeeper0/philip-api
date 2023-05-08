@@ -36,7 +36,6 @@ export class PostsController {
   /** GET 모든 게시물 */
   @Get("/")
   getAllPosts(@Req() req: Request) {
-    console.log(req);
     return this.postsRepository.getAllPosts(req);
   }
 
@@ -57,8 +56,14 @@ export class PostsController {
   @UseGuards(JwtUserAuthGuard)
   @Post("/")
   addPost(@Body() body, @Req() req: Request) {
-    console.log(req);
     return this.postsService.addPost(body.content, body.files, req.user);
+  }
+
+  /** 게시글 수정 */
+  @UseGuards(JwtUserAuthGuard)
+  @Put("/store/edit")
+  editPost(@Body() body) {
+    return this.postsService.editPost(body);
   }
 
   @Delete("/:oid")
@@ -69,16 +74,9 @@ export class PostsController {
   /**  GET 디테일 페이지 정보 요청 */
   @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
-  async getOnePostTest(@Param("oid") oid: string, @Req() req: Request) {
-    console.log("!>!", req);
+  async getOnePostTest(@Param("oid") oid: string) {
     await this.postsService.countViews(oid);
     return this.postsService.getOnePost(oid);
-  }
-
-  @UseGuards(JwtUserAuthGuard)
-  @Put("/store/edit")
-  editPost(@Body() body) {
-    return this.postsService.editPost(body);
   }
 
   /** 디테일 페이지 들어갈때 방문자수 카운트 */
@@ -118,5 +116,10 @@ export class PostsController {
   @Patch("/promotion/:oid")
   updatePromotion(@Param("oid") oid: string) {
     return this.postsService.updatePromotion(oid);
+  }
+
+  @Put("/promotion/role/:oid")
+  updatePromotionRole(@Body() body) {
+    return this.postsService.updatePromotionRole(body);
   }
 }

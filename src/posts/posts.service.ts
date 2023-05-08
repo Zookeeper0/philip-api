@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -30,9 +31,6 @@ export class PostsService {
       data.adminOid = user.oid;
 
       await post.create(data, { transaction: t });
-      // /** oid 생성 */
-      // const USER_OID = await this.util.getOid(post, "post");
-
       // 이미지 처리 로직
       if (filesData) {
         filesData.forEach((file) => {
@@ -55,7 +53,7 @@ export class PostsService {
     } catch (error) {
       await t.rollback();
       Logger.error(error);
-      throw new UnauthorizedException();
+      throw new BadRequestException(error);
     }
   }
 
@@ -68,7 +66,7 @@ export class PostsService {
     } catch (error) {
       await t.rollback();
       Logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new BadRequestException(error);
     }
   }
 
@@ -214,7 +212,7 @@ export class PostsService {
     } catch (error) {
       await t.rollback();
       Logger.error(error);
-      throw new UnauthorizedException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -251,7 +249,7 @@ export class PostsService {
     } catch (error) {
       await t.rollback();
       Logger.error(error);
-      throw new UnauthorizedException();
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -264,10 +262,36 @@ export class PostsService {
         { where: { oid: oid } }
       );
       await t.commit();
+      return;
     } catch (error) {
       await t.rollback();
       Logger.error(error);
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updatePromotionRole(data) {
+    const t = await this.seqeulize.transaction();
+    try {
+      /** data */
+      const isit = await post.findOne({
+        where: {
+          order: data.order,
+        },
+      });
+      if (data.order !== "0" && isit) {
+        throw new InternalServerErrorException();
+      }
+
+      await post.update({ order: data.order }, { where: { oid: data.oid } });
+      await t.commit();
+      return;
+    } catch (error) {
+      await t.rollback();
+      Logger.error(error);
+      throw new InternalServerErrorException(
+        "중복된 프로모션 순서입니다. 확인해주세요."
+      );
     }
   }
 }

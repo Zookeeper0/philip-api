@@ -36,7 +36,6 @@ export class AdminService {
           adminId: adminId,
         },
       });
-
       if (signinData === null) {
         throw new NotFoundException("존재하지 않는 사용자입니다.");
       }

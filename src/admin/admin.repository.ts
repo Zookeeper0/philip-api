@@ -20,6 +20,10 @@ export class AdminRepository {
           a.oid,
           a.admin_id,
           a.name,
+          a.department,
+          a.region,
+          a.note,
+          a.created_at,
           a.role
         FROM
           admin AS a

@@ -2,7 +2,7 @@ import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const ACCESS_TOKEN_EXPIRES = "14d";
+const ACCESS_TOKEN_EXPIRES = "30m";
 
 export const createAccessToken = (payload: any) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {

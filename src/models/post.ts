@@ -28,6 +28,7 @@ export interface postAttributes {
   promotion?: boolean;
   ownerName?: string;
   remark?: string;
+  order?: number;
 }
 
 @Table({
@@ -139,6 +140,14 @@ export class post
   })
   remark?: string;
 
+  @Column({
+    allowNull: true,
+    type: DataType.INTEGER,
+  })
+  order?: number;
+
+  @ForeignKey(() => admin)
+  @ForeignKey(() => category)
   @BelongsTo(() => category, { as: "category", foreignKey: "category_oid" })
   category: category;
 
