@@ -191,10 +191,12 @@ export class PostsRepository {
   /** 업체관리 페이지 업체리스트 가져오기 */
   async getAdminStorePosts(req: Request) {
     try {
-      const { search, category }: any = req.query;
+      const { search, category, promotion }: any = req.query;
       if (category === ALL_OID) {
+        console.log("promotion", typeof promotion, promotion);
         const whereArr = [
           ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
+          ["AND p.promotion = true", promotion === "true" ? true : false],
         ];
 
         return await this.sequelize.query(
@@ -232,6 +234,7 @@ export class PostsRepository {
         const whereArr = [
           ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
           ["AND p.category_oid LIKE :category", category],
+          ["AND p.promotion = true", promotion === "true" ? true : false],
         ];
         return await this.sequelize.query(
           `
