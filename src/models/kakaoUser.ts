@@ -8,6 +8,9 @@ export interface kakaoUserAttributes {
     createdAt?: Date;
     updatedAt?: Date;
     kakaoId?: string;
+    name?: string;
+    phoneNumber?: string;
+    role?: string;
 }
 
 @Table({
@@ -60,5 +63,24 @@ export class kakaoUser extends Model<kakaoUserAttributes, kakaoUserAttributes> i
     	type: DataType.STRING(100) 
     })
     	kakaoId?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	name?: string;
+
+    @Column({
+    	field: "phone_number",
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	phoneNumber?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	role?: string;
 
 }

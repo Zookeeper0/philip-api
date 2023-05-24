@@ -7,4 +7,5 @@ export class CreateAdminDto {
   // 어드민 이름
   name: string;
   birth: string;
+  role?: string;
 }

@@ -1,9 +1,21 @@
-import { Controller, Post, Body, Res } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Get,
+  Req,
+  Delete,
+  Param,
+  UseGuards,
+  Put,
+} from "@nestjs/common";
 import { AdminRepository } from "./admin.repository";
 import { AdminService } from "./admin.service";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { SignInAdminDto } from "./dto/sigIn-admin.dto";
-import { Response } from "express";
+import { Request, Response } from "express";
+import { JwtUserAuthGuard } from "src/auth/guard/admin.auth.guard";
 
 @Controller("admin")
 export class AdminController {
@@ -11,6 +23,13 @@ export class AdminController {
     private readonly adminRepository: AdminRepository,
     private readonly adminService: AdminService
   ) {}
+
+  /** id 중복 확인 */
+  @Post("/check")
+  checkDuplicateId(@Body() body) {
+    const { id } = body;
+    return this.adminService.checkDuplicateId(id);
+  }
 
   /** 회원가입 */
   @Post("/signup")
@@ -22,14 +41,40 @@ export class AdminController {
   @Post("/signin")
   async signIn(@Body() signInAdminDto: SignInAdminDto, @Res() res: Response) {
     const accessToken = await this.adminService.signInAdmin(signInAdminDto);
-    console.log("acc", accessToken);
-    res.setHeader("Authorization", "Bearer " + accessToken.accessToken);
-    res.cookie("jwt", accessToken.accessToken, {
-      httpOnly: true,
-      //하루
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-    console.log(accessToken.accessToken);
-    return res.send(accessToken.accessToken);
+    return res.send(accessToken);
+  }
+
+  /** admin 페이지 관리자 설정, 관리자 리스트 */
+  @UseGuards(JwtUserAuthGuard)
+  @Get("/list")
+  getAdminList(@Req() req: Request) {
+    return this.adminRepository.getAdminList(req);
+  }
+
+  /** 광고 추가 */
+  @Post("/ads")
+  addAds(@Body() body, @Req() req: Request) {
+    return this.adminService.addAds(body);
+  }
+
+  /** 광고 리스트 */
+  @Get("/ads")
+  getAds() {
+    return this.adminService.getAds();
+  }
+
+  @Delete("/ads/:id")
+  deleteOneAds(@Param("id") id: string) {
+    return this.adminService.deleteOneAds(id);
+  }
+
+  @Delete("/ads")
+  deleteAllAds() {
+    return this.adminService.deleteAllAds();
+  }
+
+  @Put("/role")
+  changeUserRole(@Body() body) {
+    return this.adminService.changeAdminRole(body);
   }
 }

@@ -10,6 +10,10 @@ export interface adminAttributes {
     birth?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    role?: string;
+    department?: string;
+    region?: string;
+    note?: string;
 }
 
 @Table({
@@ -68,5 +72,29 @@ export class admin extends Model<adminAttributes, adminAttributes> implements ad
     	type: DataType.DATE 
     })
     	updatedAt?: Date;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(50) 
+    })
+    	role?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(50) 
+    })
+    	department?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(50) 
+    })
+    	region?: string;
+
+    @Column({
+    	allowNull: true,
+    	type: DataType.STRING(100) 
+    })
+    	note?: string;
 
 }

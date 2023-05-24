@@ -1,17 +1,20 @@
 import {
   Controller,
   Post,
+  Patch,
   Get,
   Body,
   Param,
   Query,
   Bind,
+  Delete,
+  Res,
   Req,
-  UseGuards,
+  Put,
 } from "@nestjs/common";
 import {
-  Patch,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common/decorators";
 import { FilesInterceptor } from "@nestjs/platform-express/multer";
@@ -19,8 +22,9 @@ import { PostsRepository } from "./posts.repository";
 import { PostsService } from "./posts.service";
 import { multerDiskOptions } from "src/common/multerOptions";
 import { JwtKakaoAuthGuard } from "src/auth/guard/kakao.auth.guard";
-import { Request } from "express";
-import { JwtUserAuthGuard } from "src/auth/guard/user.auth.guard";
+import { Request, Response } from "express";
+import { JwtUserAuthGuard } from "src/auth/guard/admin.auth.guard";
+import { files } from "src/models";
 
 @Controller("posts")
 export class PostsController {
@@ -29,39 +33,93 @@ export class PostsController {
     private readonly postsService: PostsService
   ) {}
 
+  /** GET 모든 게시물 */
   @Get("/")
-  getAllPosts(
-    @Query("category") category: string,
-    @Query("search") search: string
-  ) {
-    return this.postsRepository.getAllPosts(category, search);
+  getAllPosts(@Req() req: Request) {
+    return this.postsRepository.getAllPosts(req);
   }
 
+  /** GET admin 업체관리 페이지 dataSource */
+  @UseGuards(JwtUserAuthGuard)
+  @Get("/store")
+  getAdminStorePosts(@Req() req: Request) {
+    return this.postsRepository.getAdminStorePosts(req);
+  }
+
+  /** GET 모든 프로모션 게시물  */
   @Get("/promotion")
-  getPromotionPosts(@Query("category") category: string) {
-    return this.postsRepository.getPromotionPosts(category);
+  getPromotionPosts(@Req() req: Request) {
+    return this.postsRepository.getPromotionPosts(req);
   }
 
-  /** FilesInterceptor의 첫번째 속성 이름이 formData의 이미지가 담겨있는 key값과 같아야한다.*/
+  /** 게시글 등록 */
+  @UseGuards(JwtUserAuthGuard)
   @Post("/")
-  @UseInterceptors(FilesInterceptor("files", null, multerDiskOptions))
-  @Bind(UploadedFiles())
-  addPost(filesData: Array<Express.Multer.File>, @Body() body) {
-    const data = JSON.parse(body.content);
-    return this.postsService.addPost(data, filesData);
+  addPost(@Body() body, @Req() req: Request) {
+    return this.postsService.addPost(body.content, body.files, req.user);
   }
 
-  // @UseGuards(JwtKakaoAuthGuard)
+  /** 게시글 수정 */
+  @UseGuards(JwtUserAuthGuard)
+  @Put("/store/edit")
+  editPost(@Body() body) {
+    return this.postsService.editPost(body);
+  }
+
+  @Delete("/:oid")
+  deletePost(@Param("oid") oid: string) {
+    return this.postsService.deletePost(oid);
+  }
+
+  /**  GET 디테일 페이지 정보 요청 */
+  @UseGuards(JwtKakaoAuthGuard)
   @Get("/:oid")
-  async getOnePost(@Param("oid") oid: string, @Req() req: Request) {
-    console.log("req.headers", req.headers);
+  async getOnePostTest(@Param("oid") oid: string) {
     await this.postsService.countViews(oid);
-    return this.postsRepository.getOnePost(oid);
+    return this.postsService.getOnePost(oid);
   }
 
   /** 디테일 페이지 들어갈때 방문자수 카운트 */
   @Patch("/:oid")
   patchViews(@Param("oid") countOid: string) {
     return this.postsService.countViews(countOid);
+  }
+
+  /** 이미지 미리보기 업로드 */
+  /** FilesInterceptor의 첫번째 속성 이름이 formData의 이미지가 담겨있는 key값과 같아야한다.*/
+  @Post("/images")
+  @UseInterceptors(FilesInterceptor("files", null, multerDiskOptions))
+  @Bind(UploadedFiles())
+  uploadImages(filesData: Array<Express.Multer.File>, @Res() res: Response) {
+    return res.json(filesData);
+  }
+
+  /** 미리보기 이미지 삭제 */
+  @Delete("/images/preview/:file")
+  deletePreviewImages(@Param("file") fileName: string) {
+    return this.postsService.deletePreviewImages(fileName);
+  }
+
+  /** 업체 수정시 이미지 삭제 */
+  @Delete("images/:file")
+  deleteImage(@Param("file") oid: string) {
+    return this.postsService.deleteImage(oid);
+  }
+
+  /** admin 업체 수정시 정보 GET */
+  @UseGuards(JwtUserAuthGuard)
+  @Get("/edit/:oid")
+  getEditPostInfo(@Param("oid") oid: string) {
+    return this.postsService.getEditPostInfo(oid);
+  }
+
+  @Patch("/promotion/:oid")
+  updatePromotion(@Param("oid") oid: string) {
+    return this.postsService.updatePromotion(oid);
+  }
+
+  @Put("/promotion/role/:oid")
+  updatePromotionRole(@Body() body) {
+    return this.postsService.updatePromotionRole(body);
   }
 }

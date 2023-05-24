@@ -4,7 +4,7 @@
 export class PostDto {
   id: string;
 
-  title: string;
+  storeName: string;
 
   contents: string;
 

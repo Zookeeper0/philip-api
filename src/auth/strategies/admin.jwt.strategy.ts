@@ -5,20 +5,19 @@ import { AdminService } from "src/admin/admin.service";
 import { AuthService } from "../auth.service";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, "jwt-user") {
+export class JwtStrategy extends PassportStrategy(Strategy, "jwt-admin") {
   constructor(
     private readonly authService: AuthService,
     private readonly adminService: AdminService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: true,
+      ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
     });
   }
 
   async validate(payload, done): Promise<any> {
-    console.log("payload :", payload);
     const user = await this.authService.tokenValidate(payload);
     if (!user) {
       return done(
