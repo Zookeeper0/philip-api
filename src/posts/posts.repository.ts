@@ -195,7 +195,7 @@ export class PostsRepository {
       if (category === ALL_OID) {
         console.log("promotion", typeof promotion, promotion);
         const whereArr = [
-          ["AND lower(p.store_name) LIKE :search", search.toLowerCase()],
+          ["AND p.store_name LIKE :search", search],
           ["AND p.promotion = true", promotion === "true" ? true : false],
         ];
 

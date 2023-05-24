@@ -24,6 +24,13 @@ export class AdminController {
     private readonly adminService: AdminService
   ) {}
 
+  /** id 중복 확인 */
+  @Post("/check")
+  checkDuplicateId(@Body() body) {
+    const { id } = body;
+    return this.adminService.checkDuplicateId(id);
+  }
+
   /** 회원가입 */
   @Post("/signup")
   signUp(@Body() createAdmindto: CreateAdminDto) {
