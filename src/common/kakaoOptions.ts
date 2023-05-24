@@ -13,6 +13,7 @@ export async function getTokenFromKakao(authCode) {
     const response = await axios
       .post(tokenUrl, "", config)
       .then((res) => res.data);
+
     return response;
   } catch (err) {
     Logger.error(err);

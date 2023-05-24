@@ -2,17 +2,16 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class CreatePostDto {
-  oid?: string;
-  adminOid?: string;
-  cityOid?: string;
+  cityOid: string;
   categoryOid: string;
   storeName: string;
+  ownerName: string;
   address: string;
-  token?: string;
   phoneNumber: string;
   contents: string;
-  views?: number;
+  remark: string;
+  views: number;
 
-  createDate?: Date;
-  updateDate?: Date;
+  oid?: string;
+  adminOid: string;
 }

@@ -36,7 +36,6 @@ export class AdminService {
           adminId: adminId,
         },
       });
-
       if (signinData === null) {
         throw new NotFoundException("존재하지 않는 사용자입니다.");
       }
@@ -62,6 +61,20 @@ export class AdminService {
     }
   }
 
+  async checkDuplicateId(id: string) {
+    // duple check
+    const idCheck = await admin.findOne({
+      where: {
+        adminId: id,
+      },
+    });
+
+    if (idCheck !== null) {
+      throw new HttpException("사용할 수 없는 아이디 입니다. ", 400);
+    }
+    return idCheck;
+  }
+
   /** 관리자 생성  */
   // createAdmindto( oid?, adminId, password, name, birth)
   async createAdmin(createAdmindto: CreateAdminDto) {
@@ -71,10 +84,6 @@ export class AdminService {
       const adminData = await admin.findOne({
         where: {
           adminId: createAdmindto.adminId,
-          password: crypto
-            .createHash("sha512")
-            .update(createAdmindto.password)
-            .digest("hex"),
         },
       });
 
@@ -100,6 +109,7 @@ export class AdminService {
     } catch (error) {
       Logger.error(error);
       await t.rollback();
+      throw new InternalServerErrorException(error);
     }
   }
 
