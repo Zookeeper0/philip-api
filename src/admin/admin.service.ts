@@ -62,7 +62,6 @@ export class AdminService {
   }
 
   async checkDuplicateId(id: string) {
-    console.log(id);
     // duple check
     const idCheck = await admin.findOne({
       where: {

@@ -193,7 +193,6 @@ export class PostsRepository {
     try {
       const { search, category, promotion }: any = req.query;
       if (category === ALL_OID) {
-        console.log("promotion", typeof promotion, promotion);
         const whereArr = [
           ["AND p.store_name LIKE :search", search],
           ["AND p.promotion = true", promotion === "true" ? true : false],
