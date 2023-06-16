@@ -44,9 +44,9 @@ export class PostsRepository {
   }
 
   /** GET 모든 게시물 */
-  async getAllPosts(req: Request) {
+  async getAllPosts(req: any) {
     try {
-      const { city, search, category }: any = req.query;
+      const { city, search, category } = req;
       if (category === ALL_OID) {
         const whereArr = [
           ["AND  lower(p.store_name) LIKE :search", search.toLowerCase()],

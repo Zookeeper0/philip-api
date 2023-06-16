@@ -5,7 +5,6 @@ import {
   Get,
   Body,
   Param,
-  Query,
   Bind,
   Delete,
   Res,
@@ -13,6 +12,7 @@ import {
   Put,
 } from "@nestjs/common";
 import {
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -24,7 +24,6 @@ import { multerDiskOptions } from "src/common/multerOptions";
 import { JwtKakaoAuthGuard } from "src/auth/guard/kakao.auth.guard";
 import { Request, Response } from "express";
 import { JwtUserAuthGuard } from "src/auth/guard/admin.auth.guard";
-import { files } from "src/models";
 
 @Controller("posts")
 export class PostsController {
@@ -33,9 +32,13 @@ export class PostsController {
     private readonly postsService: PostsService
   ) {}
 
+  /**
+   * @member 전가은
+   * req 객체 보다 @Query 어노테이션을 사용하면 쿼리값을 바로 불러올 수 있습니다.
+   * */
   /** GET 모든 게시물 */
   @Get("/")
-  getAllPosts(@Req() req: Request) {
+  getAllPosts(@Query() req: any) {
     return this.postsRepository.getAllPosts(req);
   }
 
@@ -118,6 +121,10 @@ export class PostsController {
     return this.postsService.updatePromotion(oid);
   }
 
+  /**
+   * @member 전가은
+   * body에 dto 지정해주세요.
+   * */
   @Put("/promotion/role/:oid")
   updatePromotionRole(@Body() body) {
     return this.postsService.updatePromotionRole(body);
